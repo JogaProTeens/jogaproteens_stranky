@@ -1,0 +1,74 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 1000" width="1000" height="1000" preserveAspectRatio="xMidYMid meet">
+  <defs>
+    <radialGradient id="bb-core" cx="42%" cy="48%" r="52%">
+      <stop offset="0%" stop-color="#8fb2dc" stop-opacity="0.62"></stop>
+      <stop offset="30%" stop-color="#9dbde2" stop-opacity="0.42"></stop>
+      <stop offset="52%" stop-color="#b6cce8" stop-opacity="0.20"></stop>
+      <stop offset="70%" stop-color="#cddcef" stop-opacity="0.07"></stop>
+      <stop offset="86%" stop-color="#e6eef7" stop-opacity="0.02"></stop>
+      <stop offset="100%" stop-color="#e6eef7" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="bb-halo" cx="46%" cy="52%" r="62%">
+      <stop offset="0%" stop-color="#a8c4e6" stop-opacity="0.28"></stop>
+      <stop offset="42%" stop-color="#c2d5ec" stop-opacity="0.13"></stop>
+      <stop offset="72%" stop-color="#d8e5f3" stop-opacity="0.04"></stop>
+      <stop offset="100%" stop-color="#dfeaf6" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="bb-hot" cx="36%" cy="40%" r="32%">
+      <stop offset="0%" stop-color="#7ba4d4" stop-opacity="0.32"></stop>
+      <stop offset="60%" stop-color="#7ba4d4" stop-opacity="0.08"></stop>
+      <stop offset="100%" stop-color="#7ba4d4" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="bb-cool" cx="62%" cy="70%" r="36%">
+      <stop offset="0%" stop-color="#9fc0d8" stop-opacity="0.19"></stop>
+      <stop offset="58%" stop-color="#9fc0d8" stop-opacity="0.05"></stop>
+      <stop offset="100%" stop-color="#9fc0d8" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="bb-warmkiss" cx="78%" cy="30%" r="32%">
+      <stop offset="0%" stop-color="#f3cdb8" stop-opacity="0.18"></stop>
+      <stop offset="60%" stop-color="#f3cdb8" stop-opacity="0.04"></stop>
+      <stop offset="100%" stop-color="#f3cdb8" stop-opacity="0"></stop>
+    </radialGradient>
+    <radialGradient id="bb-fade" cx="47%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#fff" stop-opacity="1"></stop>
+      <stop offset="45%" stop-color="#fff" stop-opacity="1"></stop>
+      <stop offset="66%" stop-color="#fff" stop-opacity="0.62"></stop>
+      <stop offset="80%" stop-color="#fff" stop-opacity="0.28"></stop>
+      <stop offset="91%" stop-color="#fff" stop-opacity="0.08"></stop>
+      <stop offset="100%" stop-color="#fff" stop-opacity="0"></stop>
+    </radialGradient>
+    <mask id="bb-mask" maskUnits="userSpaceOnUse" x="0" y="0" width="1000" height="1000">
+      <rect x="0" y="0" width="1000" height="1000" fill="url(#bb-fade)"></rect>
+    </mask>
+    <filter id="bb-grain" x="-30%" y="-30%" width="160%" height="160%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" seed="7" result="n"></feTurbulence>
+      <feColorMatrix in="n" type="saturate" values="0" result="g"></feColorMatrix>
+      <feComponentTransfer in="g" result="soft">
+        <feFuncA type="linear" slope="0.13" intercept="0"></feFuncA>
+      </feComponentTransfer>
+      <feComposite in="soft" in2="SourceAlpha" operator="in"></feComposite>
+    </filter>
+    <filter id="bb-warp" x="-45%" y="-45%" width="190%" height="190%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.006 0.009" numOctaves="4" seed="19" result="t"></feTurbulence>
+      <feDisplacementMap in="SourceGraphic" in2="t" scale="90" xChannelSelector="R" yChannelSelector="G"></feDisplacementMap>
+      <feGaussianBlur stdDeviation="26"></feGaussianBlur>
+    </filter>
+    <filter id="bb-grainblur" x="-40%" y="-40%" width="180%" height="180%">
+      <feGaussianBlur stdDeviation="34"></feGaussianBlur>
+    </filter>
+  </defs>
+  <g mask="url(#bb-mask)">
+    <g filter="url(#bb-warp)">
+      <ellipse cx="470" cy="500" rx="400" ry="440" fill="url(#bb-halo)"></ellipse>
+      <ellipse cx="450" cy="490" rx="335" ry="372" fill="url(#bb-core)"></ellipse>
+      <ellipse cx="380" cy="410" rx="220" ry="230" fill="url(#bb-hot)"></ellipse>
+      <ellipse cx="600" cy="660" rx="240" ry="220" fill="url(#bb-cool)"></ellipse>
+      <ellipse cx="740" cy="320" rx="210" ry="200" fill="url(#bb-warmkiss)"></ellipse>
+    </g>
+    <g filter="url(#bb-grain)" opacity="0.42">
+      <g filter="url(#bb-grainblur)">
+        <ellipse cx="450" cy="490" rx="330" ry="365" fill="#6d95c6"></ellipse>
+      </g>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600">
+  <defs>
+    <pattern id="p" width="120" height="120" patternUnits="userSpaceOnUse">
+  <g transform="translate(8,8) scale(0.26)"><circle cx="100" cy="30" r="22" fill="#F7C9B8"></circle><circle cx="170" cy="100" r="22" fill="#C9D9E8"></circle><circle cx="100" cy="170" r="22" fill="#F7C9B8"></circle><circle cx="30" cy="100" r="22" fill="#C9D9E8"></circle><rect x="78" y="78" width="44" height="44" rx="10" transform="rotate(45 100 100)" fill="#FCE3DA"></rect></g>
+  <g transform="translate(68,68) scale(0.16)"><circle cx="100" cy="30" r="22" fill="#C9D9E8"></circle><circle cx="170" cy="100" r="22" fill="#FCE3DA"></circle><circle cx="100" cy="170" r="22" fill="#C9D9E8"></circle><circle cx="30" cy="100" r="22" fill="#FCE3DA"></circle></g>
+    </pattern>
+  </defs>
+  <rect width="600" height="600" fill="#FBF8F4"></rect>
+  <rect width="600" height="600" fill="url(#p)"></rect>
+</svg>

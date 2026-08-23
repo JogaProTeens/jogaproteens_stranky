@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jóga pro teens — jóga pro dospívající</title>
+<meta name="description" content="Jóga pro dospívající — lekce pro školy i veřejnost. Pro tělo, dech a klidnou hlavu.">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+  /* ---- Maragsa Display ----
+     PREVIEW: loaded from a font CDN so you can see it now.
+     PRODUCTION: download the free OTF (jadmaza / behance), convert to .woff2,
+     drop it in /fonts, and the line below will use your local copy first. */
+  @font-face{
+    font-family:"Maragsa Display";
+    src:local("Maragsa Display"), local("Maragsa"),
+        url("fonts/maragsa.woff2") format("woff2"),
+        url("https://db.onlinewebfonts.com/t/9f2b621d82a6ba15ab2d3efa1a2ae582.woff2") format("woff2");
+    font-weight:400;font-style:normal;font-display:swap;
+  }
+
+  :root{
+    --bg:#FBF8F4;
+    --primary:#F7C9B8;
+    --primary-tint:#FCE3DA;
+    --accent:#2E4A66;
+    --accent-tint:#C9D9E8;
+
+    --ink:#2E4A66;
+    --ink-soft:#5b7088;
+    --on-dark:#FBF8F4;
+    --on-dark-soft:#C9D9E8;
+
+    --display:"Maragsa Display", "Fraunces", Georgia, "Times New Roman", serif;
+    --serif:"Fraunces", Georgia, serif;        /* for italics & soft accents */
+    --sans:"Hanken Grotesk", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+    --maxw:1180px;
+    --pad:clamp(1.25rem, 5vw, 4rem);
+    --radius:18px;
+    --ease:cubic-bezier(.16,1,.3,1);
+  }
+
+  *{box-sizing:border-box;margin:0;padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:var(--sans);
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+  ::selection{background:var(--accent);color:var(--on-dark);}
+
+  /* ---------- layout helpers ---------- */
+  .wrap{max-width:var(--maxw);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad);position:relative;z-index:3;}
+  .eyebrow{
+    font-size:.78rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    color:var(--ink-soft);display:inline-flex;align-items:center;gap:.6rem;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:currentColor;display:inline-block;opacity:.6;}
+  .section{padding-block:clamp(4.5rem, 10vw, 8rem);}
+  section,footer{position:relative;z-index:3;}
+
+  h1,h2,h3{font-family:var(--display);font-weight:400;line-height:1.04;letter-spacing:-.02em;}
+  .h-sec{font-size:clamp(2.1rem, 5vw, 3.6rem);margin-top:1rem;max-width:15ch;}
+  p.lead{font-size:clamp(1.1rem,2vw,1.35rem);color:var(--ink-soft);max-width:46ch;margin-top:1.4rem;}
+
+  /* ---------- buttons ---------- */
+  .btn{
+    display:inline-flex;align-items:center;gap:.5rem;font-family:var(--sans);
+    font-weight:600;font-size:.98rem;
+    padding:.85rem 1.6rem;border-radius:999px;border:1.5px solid var(--accent);
+    transition:transform .25s ease, background .25s ease, color .25s ease;cursor:pointer;
+  }
+  .btn-solid{background:var(--accent);color:var(--on-dark);}
+  .btn-ghost{background:transparent;color:var(--accent);}
+  .btn:hover{transform:translateY(-2px);}
+  .btn-solid:hover{background:#243a52;}
+  .btn-ghost:hover{background:var(--accent);color:var(--on-dark);}
+  .btn .arrow{transition:transform .25s ease;}
+  .btn:hover .arrow{transform:translateX(3px);}
+
+  /* ---------- nav ---------- */
+  header.nav{
+    position:sticky;top:0;z-index:50;
+    background:color-mix(in srgb, var(--bg) 86%, transparent);
+    backdrop-filter:blur(10px);border-bottom:1px solid transparent;
+    transition:border-color .3s ease;
+  }
+  header.nav.scrolled{border-color:rgba(46,74,102,.12);}
+  .nav-inner{display:flex;align-items:center;justify-content:space-between;height:72px;}
+  .brand{font-family:var(--display);font-size:1.5rem;letter-spacing:-.01em;display:flex;align-items:center;gap:.5rem;}
+  .brand-icon{width:32px;height:32px;flex:none;}
+  .brand span{color:var(--primary);-webkit-text-fill-color:#e0a98f;}
+  .nav-links{display:flex;gap:1.6rem;align-items:center;}
+  .nav-links a{font-size:.95rem;font-weight:500;color:var(--ink-soft);position:relative;padding:.3rem 0;}
+  .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;height:2px;width:0;background:var(--primary);transition:width .25s ease;}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-links a:hover::after{width:100%;}
+  .nav-toggle{display:none;background:none;border:0;cursor:pointer;padding:.5rem;}
+  .nav-toggle span{display:block;width:24px;height:2px;background:var(--accent);margin:5px 0;transition:.3s;}
+
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding-top:clamp(3rem,8vw,6rem);padding-bottom:clamp(4rem,9vw,7rem);}
+  .hero-deco{position:absolute;right:-1rem;top:calc(clamp(3rem,8vw,6rem) + calc(3 * clamp(2.8rem,8vw,5.8rem) * 1.02) / 2);transform:translateY(-50%);z-index:1;pointer-events:none;}
+  .hero-deco img{display:block;height:50vh;width:auto;max-width:none;opacity:.9;}
+  .breath{
+    position:fixed;z-index:2;width:min(70vw,560px);aspect-ratio:1;right:-6%;top:8%;
+    background:radial-gradient(circle at 40% 40%, var(--primary), var(--primary-tint));
+    border-radius:46% 54% 60% 40% / 50% 44% 56% 50%;filter:blur(8px);opacity:.85;
+    animation:breathe 7s ease-in-out infinite alternate;
+  }
+  .breath.two{position:fixed;z-index:2;width:min(130vw,1040px);aspect-ratio:1;left:0;bottom:-50%;top:auto;right:auto;
+    background:none;border-radius:0;filter:none;opacity:1;
+    transform:translateX(-30%);animation:none;}
+  .breath.two img{width:100%;height:100%;display:block;max-width:none;}
+  @keyframes breathe{from{transform:scale(1);}to{transform:scale(1.09) translateY(-10px);}}
+  .hero-content{position:relative;z-index:1;}
+  .hero h1{font-size:clamp(2.8rem, 8vw, 5.8rem);max-width:16ch;line-height:1.02;}
+  .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);letter-spacing:0;}
+  .hero .lead{margin-top:1.8rem;}
+  .hero-cta{display:flex;gap:1rem;flex-wrap:wrap;margin-top:2.4rem;}
+  .hero-meta{margin-top:3.2rem;display:flex;gap:2.4rem;flex-wrap:wrap;font-size:.9rem;color:var(--ink-soft);}
+  .hero-meta strong{display:block;font-family:var(--display);font-size:1.9rem;color:var(--ink);font-weight:400;}
+
+  /* ---------- generic two-col ---------- */
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:clamp(2rem,5vw,4.5rem);align-items:start;}
+
+  /* ---------- placeholder images ---------- */
+  .ph-img{position:relative;border-radius:var(--radius);overflow:hidden;background:var(--primary-tint);}
+  .ph-img img{width:100%;height:100%;object-fit:cover;}
+  .ph-img .ph-tag{
+    position:absolute;top:.7rem;left:.7rem;z-index:2;
+    font-family:var(--sans);font-size:.7rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+    background:rgba(251,248,244,.9);color:var(--accent);padding:.3rem .7rem;border-radius:999px;
+  }
+
+  /* ---------- cards (Teenjóga) ---------- */
+  .cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3rem;}
+  .card{
+    text-align:left;font-family:var(--sans);cursor:pointer;
+    background:var(--primary-tint);border-radius:var(--radius);padding:2rem 1.8rem;
+    border:1.5px solid transparent;transition:transform .3s ease, border-color .3s ease, background .3s ease;
+    display:flex;flex-direction:column;gap:.5rem;
+  }
+  .card:hover{transform:translateY(-4px);}
+  .card.active{background:var(--primary);border-color:var(--accent);}
+  .card .c-top{display:flex;justify-content:space-between;align-items:center;}
+  .card .num{font-family:var(--display);font-size:1.15rem;color:#d98a6f;}
+  .card .plus{width:26px;height:26px;position:relative;flex:none;transition:transform .4s var(--ease);}
+  .card .plus::before,.card .plus::after{content:"";position:absolute;background:var(--accent);border-radius:2px;}
+  .card .plus::before{top:50%;left:0;width:100%;height:2px;transform:translateY(-50%);}
+  .card .plus::after{left:50%;top:0;height:100%;width:2px;transform:translateX(-50%);transition:opacity .3s ease;}
+  .card.active .plus{transform:rotate(180deg);}
+  .card.active .plus::after{opacity:0;}
+  .card h3{font-family:var(--display);font-size:1.35rem;margin-top:.4rem;}
+  .card p{color:var(--ink-soft);font-size:.98rem;}
+
+  /* ---------- roll-out detail panel ---------- */
+  .card-detail{display:grid;grid-template-rows:0fr;margin-top:0;
+    transition:grid-template-rows .55s var(--ease), margin-top .45s var(--ease);}
+  .card-detail.open{grid-template-rows:1fr;margin-top:1.5rem;}
+  .cd-clip{overflow:hidden;min-height:0;}
+  .cd-inner{
+    background:var(--accent);color:var(--on-dark);border-radius:var(--radius);
+    padding:clamp(1.6rem,3vw,2.6rem);display:grid;grid-template-columns:1.3fr 1fr;
+    gap:clamp(1.5rem,4vw,3rem);align-items:center;
+    opacity:0;transform:translateY(16px);transition:opacity .5s ease .12s, transform .5s ease .12s;
+  }
+  .card-detail.open .cd-inner{opacity:1;transform:none;}
+  .cd-inner h3{font-family:var(--display);color:var(--on-dark);font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.8rem;}
+  .cd-inner p{color:var(--on-dark-soft);margin-bottom:.8rem;}
+  .cd-inner .ph-img{aspect-ratio:4/3;}
+
+  /* ---------- Pro školy (dark) ---------- */
+  .dark{background:var(--accent);color:var(--on-dark);}
+  .dark .eyebrow{color:var(--accent-tint);}
+  .dark .h-sec{color:var(--on-dark);}
+  .dark p.lead{color:var(--on-dark-soft);}
+  .skoly-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(2rem,5vw,4.5rem);align-items:center;}
+  .skoly-grid .ph-img{aspect-ratio:3/4;}
+  .steps{display:grid;gap:1.4rem;margin-top:1.8rem;}
+  .step{display:flex;gap:1.3rem;align-items:baseline;padding-bottom:1.3rem;border-bottom:1px solid rgba(201,217,232,.18);}
+  .step:last-child{border-bottom:0;}
+  .step .s-num{font-family:var(--display);font-size:1.6rem;color:var(--primary);min-width:2.5rem;}
+  .step h3{font-family:var(--display);font-size:1.3rem;color:var(--on-dark);margin-bottom:.3rem;}
+  .step p{color:var(--on-dark-soft);font-size:.96rem;}
+
+  /* ---------- Lekce (schedule) ---------- */
+  .schedule{margin-top:2.6rem;border-top:1px solid rgba(46,74,102,.14);}
+  .row{display:grid;grid-template-columns:1.4fr 1fr 1.6fr auto;gap:1rem;align-items:center;
+    padding:1.3rem .4rem;border-bottom:1px solid rgba(46,74,102,.14);transition:background .2s ease;}
+  .row:hover{background:var(--primary-tint);}
+  .row .day{font-family:var(--display);font-size:1.35rem;}
+  .row .time{font-weight:600;}
+  .row .place{color:var(--ink-soft);font-size:.95rem;}
+  .tag{justify-self:start;font-size:.78rem;font-weight:600;letter-spacing:.04em;
+    background:var(--accent-tint);color:var(--accent);padding:.3rem .8rem;border-radius:999px;}
+
+  /* ---------- Bosá noha (editorial) ---------- */
+  .bosa{background:var(--primary-tint);color:var(--ink);}
+  .bosa-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(2rem,5vw,4rem);align-items:center;}
+  .bosa-grid .ph-img{aspect-ratio:4/5;}
+  .quote{font-family:var(--serif);font-style:italic;font-weight:400;
+    font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.25;max-width:20ch;}
+  .quote-mark{color:#e0a98f;font-size:1.4em;line-height:0;}
+
+  /* ---------- O mně ---------- */
+  .portrait{aspect-ratio:4/5;border-radius:var(--radius);
+    background:linear-gradient(150deg,var(--primary),var(--accent-tint));
+    display:flex;align-items:flex-end;padding:1.4rem;font-family:var(--serif);position:relative;overflow:hidden;}
+  .portrait .ph-note{background:rgba(251,248,244,.85);padding:.4rem .8rem;border-radius:8px;font-size:.82rem;color:var(--accent);}
+  .creds{list-style:none;margin-top:1.8rem;display:grid;gap:.9rem;}
+  .creds li{display:flex;gap:.8rem;align-items:flex-start;color:var(--ink-soft);}
+  .creds li::before{content:"—";color:#d98a6f;font-weight:700;}
+
+  /* ---------- Kontakt ---------- */
+  .contact{background:var(--accent-tint);}
+  .contact-grid{display:grid;grid-template-columns:1.2fr 1fr;gap:clamp(2rem,5vw,4rem);align-items:center;}
+  .c-list{display:grid;gap:1.3rem;margin-top:2rem;}
+  .c-item .c-label{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);}
+  .c-item .c-val{font-family:var(--display);font-size:1.5rem;margin-top:.2rem;display:inline-block;}
+  .c-item a.c-val:hover{color:var(--ink-soft);}
+
+  /* ---------- Inspirace ---------- */
+  .insp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem;margin-top:3rem;}
+  .insp-item{background:var(--primary-tint);border-radius:var(--radius);padding:2rem 1.8rem;display:flex;flex-direction:column;gap:.5rem;}
+  .insp-icon{width:38px;height:38px;flex:none;}
+  .insp-item blockquote{font-family:var(--serif);font-style:italic;font-size:1.08rem;line-height:1.55;color:var(--ink);flex:1;}
+  .insp-item .insp-src{font-size:.83rem;color:var(--ink-soft);font-weight:600;letter-spacing:.04em;}
+  @media(max-width:860px){.insp-grid{grid-template-columns:1fr;}}
+
+  /* ---------- footer ---------- */
+  footer{background:var(--accent);color:var(--on-dark);padding-block:3.5rem;}
+  .foot-inner{display:flex;justify-content:space-between;gap:2rem;flex-wrap:wrap;align-items:flex-start;}
+  .foot-brand{font-family:var(--display);font-size:1.7rem;}
+  .foot-brand span{color:var(--primary);-webkit-text-fill-color:#e0a98f;}
+  .foot-links{display:flex;gap:1.4rem;flex-wrap:wrap;}
+  .foot-links a{color:var(--on-dark-soft);font-size:.92rem;}
+  .foot-links a:hover{color:var(--on-dark);}
+  .foot-bottom{margin-top:2.5rem;padding-top:1.5rem;border-top:1px solid rgba(201,217,232,.18);
+    font-size:.85rem;color:var(--on-dark-soft);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.in{opacity:1;transform:none;}
+
+  a:focus-visible,.btn:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px;}
+
+  /* ---------- responsive ---------- */
+  @media (max-width:860px){
+    .nav-links{position:fixed;inset:72px 0 auto 0;flex-direction:column;gap:0;
+      background:var(--bg);border-bottom:1px solid rgba(46,74,102,.12);padding:.5rem var(--pad) 1.5rem;
+      transform:translateY(-130%);transition:transform .35s ease;}
+    .nav-links.open{transform:translateY(0);}
+    .nav-links a{padding:.9rem 0;width:100%;border-bottom:1px solid rgba(46,74,102,.08);font-size:1.05rem;}
+    .nav-toggle{display:block;}
+    .grid-2,.contact-grid,.skoly-grid,.bosa-grid{grid-template-columns:1fr;}
+    .hero-h1-row{flex-direction:column;align-items:flex-start;}
+    .hero-deco img{height:min(40vw,200px);width:auto;}
+    .cards{grid-template-columns:1fr;}
+    .cd-inner{grid-template-columns:1fr;}
+    .row{grid-template-columns:1fr 1fr;row-gap:.4rem;}
+    .row .place{grid-column:1/-1;}
+    .tag{grid-column:1/-1;}
+    .portrait{max-width:420px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;scroll-behavior:auto!important;}
+    .reveal{opacity:1;transform:none;}
+    .card-detail{transition:none;}
+    .cd-inner{transition:none;}
+  }
+</style>
+</head>
+<body>
+<div class="breath" aria-hidden="true"></div>
+<div class="breath two" aria-hidden="true"><img src="brand-assets/blue-blob.svg" alt=""></div>
+
+<!-- ============ NAV ============ -->
+<header class="nav" id="top">
+  <div class="wrap nav-inner">
+    <a href="#top" class="brand">
+      <img src="brand-assets/logo/icon-full-color.svg" alt="" class="brand-icon" aria-hidden="true" width="32" height="32">
+      jóga pro <span>teens</span>
+    </a>
+    <button class="nav-toggle" aria-label="Otevřít menu" aria-expanded="false" id="navToggle"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="navLinks">
+      <a href="#teenjoga">Teenjóga</a>
+      <a href="#pro-skoly">Pro školy</a>
+      <a href="#lekce">Lekce</a>
+      <a href="#bosa-noha">Bosá noha</a>
+      <a href="#inspirace">Inspirace</a>
+      <a href="#o-mne">O mně</a>
+      <a href="#kontakt">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="hero">
+  <div class="hero-deco" aria-hidden="true">
+    <img src="brand-assets/logo/icon-full-color.svg" alt="">
+  </div>
+  <div class="wrap hero-content">
+    <h1>Jóga pro dospívající <em>pro tělo, dech a klidnou hlavu.</em></h1>
+    <p class="lead">[Krátká věta o tom, co lekce nabízejí — např. bezpečný prostor, kde se teenageři učí soustředění, práci s dechem a vnímání vlastního těla.]</p>
+    <div class="hero-cta">
+      <a href="#pro-skoly" class="btn btn-solid">Pro školy <span class="arrow">→</span></a>
+      <a href="#lekce" class="btn btn-ghost">Lekce</a>
+    </div>
+    <div class="hero-meta">
+      <div><strong>13–19</strong>věk účastníků</div>
+      <div><strong>[XX]</strong>odučených hodin</div>
+      <div><strong>[XX]</strong>spolupracujících škol</div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TEENJÓGA ============ -->
+<section class="section" id="teenjoga">
+  <div class="wrap reveal">
+    <span class="eyebrow">Teenjóga</span>
+    <h2 class="h-sec">Jóga přizpůsobená dospívajícím</h2>
+    <p class="lead">[Odstavec o tom, čím se jóga pro teenagery liší od běžných lekcí — tempo, jazyk, témata, která dospívající skutečně řeší.] Klikni na kartu pro více.</p>
+
+    <div class="cards" id="cards">
+      <button class="card" data-i="0" aria-expanded="false" aria-controls="cardDetail">
+        <div class="c-top"><span class="num">01</span><span class="plus" aria-hidden="true"></span></div>
+        <h3>Tělo v pohybu</h3>
+        <p>[Krátký popis — práce s tělem v období, kdy se rychle mění.]</p>
+      </button>
+      <button class="card" data-i="1" aria-expanded="false" aria-controls="cardDetail">
+        <div class="c-top"><span class="num">02</span><span class="plus" aria-hidden="true"></span></div>
+        <h3>Dech a klid</h3>
+        <p>[Krátký popis — dechové techniky pro zvládání stresu a zkoušek.]</p>
+      </button>
+      <button class="card" data-i="2" aria-expanded="false" aria-controls="cardDetail">
+        <div class="c-top"><span class="num">03</span><span class="plus" aria-hidden="true"></span></div>
+        <h3>Hlava a soustředění</h3>
+        <p>[Krátký popis — pozornost, emoce a chvíle ticha.]</p>
+      </button>
+    </div>
+
+    <div class="card-detail" id="cardDetail">
+      <div class="cd-clip"><div class="cd-inner" id="cdInner"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PRO ŠKOLY (dark) ============ -->
+<section class="section dark" id="pro-skoly">
+  <div class="wrap reveal">
+    <div class="skoly-grid">
+      <div class="ph-img">
+        <span class="ph-tag">dočasná fotka</span>
+        <img src="https://picsum.photos/seed/proskoly/800/1000" alt="Dočasná ilustrační fotografie" loading="lazy">
+      </div>
+      <div>
+        <span class="eyebrow">Pro školy</span>
+        <h2 class="h-sec">Jóga jako součást školního dne</h2>
+        <p class="lead">[Odstavec pro vedení škol a pedagogy — jak lekce zapadnou do rozvrhu, pro jaké třídy se hodí a co od spolupráce čekat.]</p>
+        <div class="steps">
+          <div class="step"><span class="s-num">01</span><div><h3>Poptávka</h3><p>[Ozvete se a probereme potřeby školy, věk žáků a termíny.]</p></div></div>
+          <div class="step"><span class="s-num">02</span><div><h3>Ukázková lekce</h3><p>[Nezávazná ukázková lekce přímo u vás — uvidíte, jak probíhá.]</p></div></div>
+          <div class="step"><span class="s-num">03</span><div><h3>Pravidelný program</h3><p>[Domluvíme pravidelný harmonogram a formu, která vám sedí.]</p></div></div>
+        </div>
+        <a href="#kontakt" class="btn btn-ghost" style="margin-top:2rem;border-color:var(--accent-tint);color:var(--on-dark);">Domluvit ukázkovou lekci <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ LEKCE ============ -->
+<section class="section" id="lekce">
+  <div class="wrap reveal">
+    <span class="eyebrow">Lekce</span>
+    <h2 class="h-sec">Otevřené lekce pro každého</h2>
+    <p class="lead">[Krátká věta — lekce dostupné i mimo školy, vhodné pro začátečníky. Stačí přijít.]</p>
+    <div class="schedule">
+      <div class="row"><div class="day">[Pondělí]</div><div class="time">[17:00–18:00]</div><div class="place">[Studio / adresa]</div><span class="tag">Začátečníci</span></div>
+      <div class="row"><div class="day">[Středa]</div><div class="time">[18:00–19:15]</div><div class="place">[Studio / adresa]</div><span class="tag">Mírně pokročilí</span></div>
+      <div class="row"><div class="day">[Sobota]</div><div class="time">[09:30–10:45]</div><div class="place">[Studio / adresa]</div><span class="tag">Rodiče &amp; teens</span></div>
+    </div>
+    <p style="margin-top:1.8rem;color:var(--ink-soft);font-size:.95rem;">[Poznámka — např. cena za lekci, rezervace předem, co s sebou.]</p>
+  </div>
+</section>
+
+<!-- ============ BOSÁ NOHA ============ -->
+<section class="section bosa" id="bosa-noha">
+  <div class="wrap reveal bosa-grid">
+    <div class="ph-img">
+      <span class="ph-tag">dočasná fotka</span>
+      <img src="https://picsum.photos/seed/bosanoha/800/1000" alt="Dočasná ilustrační fotografie" loading="lazy">
+    </div>
+    <div>
+      <span class="eyebrow" style="color:var(--ink-soft);">Bosá noha</span>
+      <p class="quote" style="margin-top:1.2rem;"><span class="quote-mark">„</span>[Sem patří krátká, výstižná myšlenka, která vystihuje přístup „bosá noha" — návrat k základům a pevné půdě pod nohama.]</p>
+      <p class="lead" style="color:var(--ink-soft);max-width:42ch;margin-top:1.6rem;">[Odstavec, který vysvětlí, co „Bosá noha" znamená — jméno přístupu, projektu nebo filozofie. Klidně osobní příběh nebo princip, na kterém lekce stojí.]</p>
+    </div>
+  </div>
+</section>
+
+<!-- ============ INSPIRACE ============ -->
+<section class="section" id="inspirace">
+  <div class="wrap reveal">
+    <span class="eyebrow">Inspirace</span>
+    <h2 class="h-sec">Co říkají teenageři</h2>
+    <p class="lead">[Krátký úvod — autentické ohlasy nebo myšlenky od dospívajících, kteří jógu zkoušeli.]</p>
+    <div class="insp-grid">
+      <div class="insp-item">
+        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
+        <blockquote>„[Krátká citace — např. Poprvé jsem si uvědomila, jak moc mi pomáhá jen chvíli vydechnout.]"</blockquote>
+        <p class="insp-src">— [Jméno / věk / škola]</p>
+      </div>
+      <div class="insp-item">
+        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
+        <blockquote>„[Druhá citace — Myslel jsem, že jóga není pro mě, ale teď se na ni těším každý týden.]"</blockquote>
+        <p class="insp-src">— [Jméno / věk / škola]</p>
+      </div>
+      <div class="insp-item">
+        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
+        <blockquote>„[Třetí citace — pohled rodiče nebo pedagoga na změnu, kterou si všimli.]"</blockquote>
+        <p class="insp-src">— [Jméno / role]</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ O MNĚ ============ -->
+<section class="section" id="o-mne">
+  <div class="wrap reveal grid-2" style="align-items:center;">
+    <div class="portrait"><span class="ph-note">[Sem vlož fotografii — ideálně na výšku]</span></div>
+    <div>
+      <span class="eyebrow">O mně</span>
+      <h2 class="h-sec">[Jméno lektorky]</h2>
+      <p class="lead">[Krátké osobní představení — kdo jsi, proč jóga a proč právě s dospívajícími.]</p>
+      <ul class="creds">
+        <li>[Vzdělání / lektorský výcvik a rok]</li>
+        <li>[Zkušenost s prací s dětmi a mládeží]</li>
+        <li>[Případná certifikace, kurzy nebo specializace]</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ============ KONTAKT ============ -->
+<section class="section contact" id="kontakt">
+  <div class="wrap reveal contact-grid">
+    <div>
+      <span class="eyebrow">Kontakt</span>
+      <h2 class="h-sec">Ozvěte se</h2>
+      <p class="lead">[Krátká věta — pro školy i jednotlivce. Napište kdykoliv, ráda odpovím.]</p>
+      <div class="c-list">
+        <div class="c-item"><div class="c-label">E-mail</div><a class="c-val" href="mailto:ahoj@jogaproteens.cz">ahoj@jogaproteens.cz</a></div>
+        <div class="c-item"><div class="c-label">Telefon</div><a class="c-val" href="tel:+420000000000">[+420 000 000 000]</a></div>
+        <div class="c-item"><div class="c-label">Instagram</div><a class="c-val" href="#">[@jogaproteens]</a></div>
+      </div>
+    </div>
+    <div><a href="mailto:ahoj@jogaproteens.cz" class="btn btn-solid">Napsat e-mail <span class="arrow">→</span></a></div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">jóga pro <span>teens</span></div>
+      <nav class="foot-links">
+        <a href="#teenjoga">Teenjóga</a>
+        <a href="#pro-skoly">Pro školy</a>
+        <a href="#lekce">Lekce</a>
+        <a href="#bosa-noha">Bosá noha</a>
+        <a href="#inspirace">Inspirace</a>
+        <a href="#o-mne">O mně</a>
+        <a href="#kontakt">Kontakt</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>jogaproteens.cz</span>
+      <span>© <span id="year"></span> Jóga pro teens · [doplň drobné údaje]</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // mobile menu
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  links.querySelectorAll('a').forEach(a => a.addEventListener('click', () => {
+    links.classList.remove('open'); toggle.setAttribute('aria-expanded', false);
+  }));
+
+  // nav border on scroll
+  const nav = document.querySelector('header.nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // ---- Teenjóga expanding cards ----
+  const cardContent = [
+    { h:"Tělo v pohybu",
+      p:["[Delší text o práci s tělem — držení, uvolnění, vnímání pohybu v období, kdy se tělo dospívajícího rychle mění.]",
+         "[Druhý odstavec — jak vypadá taková část lekce v praxi.]"],
+      seed:"telo" },
+    { h:"Dech a klid",
+      p:["[Delší text o dechu — jednoduché techniky, které pomáhají zvládat stres, trému a nápor zkoušek.]",
+         "[Druhý odstavec — kdy se tyto techniky hodí i mimo lekci.]"],
+      seed:"dech" },
+    { h:"Hlava a soustředění",
+      p:["[Delší text o pozornosti — práce s myšlenkami, emocemi a krátké chvíle ticha uprostřed všeho okolo.]",
+         "[Druhý odstavec — co si z toho dospívající odnesou.]"],
+      seed:"hlava" }
+  ];
+
+  const detail = document.getElementById('cardDetail');
+  const inner = document.getElementById('cdInner');
+  const cards = [...document.querySelectorAll('.card')];
+  let current = -1;
+
+  function render(i){
+    const c = cardContent[i];
+    inner.innerHTML =
+      '<div>' +
+        '<h3>'+c.h+'</h3>' +
+        c.p.map(t => '<p>'+t+'</p>').join('') +
+      '</div>' +
+      '<div class="ph-img"><span class="ph-tag">dočasná fotka</span>' +
+        '<img src="https://picsum.photos/seed/'+c.seed+'/700/520" alt="Dočasná ilustrační fotografie" loading="lazy"></div>';
+  }
+
+  function close(){
+    detail.classList.remove('open');
+    cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
+    current = -1;
+  }
+
+  cards.forEach(card => {
+    card.addEventListener('click', () => {
+      const i = +card.dataset.i;
+      if (i === current){ close(); return; }
+      render(i);
+      cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
+      card.classList.add('active'); card.setAttribute('aria-expanded','true');
+      // replay the inner fade when switching between already-open cards
+      if (detail.classList.contains('open')){
+        inner.style.animation='none'; void inner.offsetWidth;
+        detail.classList.remove('open'); void detail.offsetWidth;
+      }
+      detail.classList.add('open');
+      current = i;
+    });
+  });
+</script>
+
+</body>
+</html>
