@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Jóga pro teens — jóga pro dospívající</title>
-<meta name="description" content="Jóga pro dospívající — lekce pro školy i veřejnost. Pro tělo, dech a klidnou hlavu.">
+<title>Jóga pro teens · Petra Petrů | jóga pro dospívající a školy</title>
+<meta name="description" content="TEENJÓGA, jóga pro dospívající. Lekce v Praze (Petrovice, Hostivař) a programy pro školy. Vede Petra Petrů, lektorka dětské jógy od roku 2013.">
 
+<link rel="icon" type="image/png" sizes="512x512" href="brand-assets/favicon-512.png">
+<link rel="apple-touch-icon" href="brand-assets/favicon-512.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -110,7 +112,7 @@
 
   /* ---------- hero ---------- */
   .hero{position:relative;padding-top:clamp(3rem,8vw,6rem);padding-bottom:clamp(4rem,9vw,7rem);}
-  .hero-deco{position:absolute;right:-1rem;top:calc(clamp(3rem,8vw,6rem) + calc(3 * clamp(2.8rem,8vw,5.8rem) * 1.02) / 2);transform:translateY(-50%);z-index:1;pointer-events:none;}
+  .hero-deco{position:absolute;right:clamp(1rem,5vw,4.5rem);top:calc(clamp(3rem,8vw,6rem) + calc(3 * clamp(2.8rem,8vw,5.8rem) * 1.02) / 2);transform:translateY(-50%);z-index:1;pointer-events:none;}
   .hero-deco img{display:block;height:50vh;width:auto;max-width:none;opacity:.9;}
   .breath{
     position:fixed;z-index:2;width:min(70vw,560px);aspect-ratio:1;right:-6%;top:8%;
@@ -205,14 +207,6 @@
   .tag{justify-self:start;font-size:.78rem;font-weight:600;letter-spacing:.04em;
     background:var(--accent-tint);color:var(--accent);padding:.3rem .8rem;border-radius:999px;}
 
-  /* ---------- Bosá noha (editorial) ---------- */
-  .bosa{background:var(--primary-tint);color:var(--ink);}
-  .bosa-grid{display:grid;grid-template-columns:1fr 1.1fr;gap:clamp(2rem,5vw,4rem);align-items:center;}
-  .bosa-grid .ph-img{aspect-ratio:4/5;}
-  .quote{font-family:var(--serif);font-style:italic;font-weight:400;
-    font-size:clamp(1.7rem,4vw,2.7rem);line-height:1.25;max-width:20ch;}
-  .quote-mark{color:#e0a98f;font-size:1.4em;line-height:0;}
-
   /* ---------- O mně ---------- */
   .portrait{aspect-ratio:4/5;border-radius:var(--radius);
     background:linear-gradient(150deg,var(--primary),var(--accent-tint));
@@ -220,7 +214,7 @@
   .portrait .ph-note{background:rgba(251,248,244,.85);padding:.4rem .8rem;border-radius:8px;font-size:.82rem;color:var(--accent);}
   .creds{list-style:none;margin-top:1.8rem;display:grid;gap:.9rem;}
   .creds li{display:flex;gap:.8rem;align-items:flex-start;color:var(--ink-soft);}
-  .creds li::before{content:"—";color:#d98a6f;font-weight:700;}
+  .creds li::before{content:"◆";color:#e0a98f;font-weight:700;font-size:.7em;line-height:1.9;}
 
   /* ---------- Kontakt ---------- */
   .contact{background:var(--accent-tint);}
@@ -263,7 +257,7 @@
     .nav-links.open{transform:translateY(0);}
     .nav-links a{padding:.9rem 0;width:100%;border-bottom:1px solid rgba(46,74,102,.08);font-size:1.05rem;}
     .nav-toggle{display:block;}
-    .grid-2,.contact-grid,.skoly-grid,.bosa-grid{grid-template-columns:1fr;}
+    .grid-2,.contact-grid,.skoly-grid{grid-template-columns:1fr;}
     .hero-h1-row{flex-direction:column;align-items:flex-start;}
     .hero-deco img{height:min(40vw,200px);width:auto;}
     .cards{grid-template-columns:1fr;}
@@ -279,6 +273,131 @@
     .card-detail{transition:none;}
     .cd-inner{transition:none;}
   }
+
+  /* ---------- prose blocks (long editorial text) ---------- */
+  .prose{max-width:64ch;margin-top:1.6rem;}
+  .prose p{margin-bottom:1.1rem;color:var(--ink-soft);}
+  .prose p:last-child{margin-bottom:0;}
+  .prose strong{color:var(--ink);font-weight:600;}
+  .dark .prose p{color:var(--on-dark-soft);}
+  .dark .prose strong{color:var(--on-dark);}
+  .h-sub{font-family:var(--display);font-size:clamp(1.4rem,2.6vw,1.9rem);margin:2.6rem 0 .2rem;}
+  .dark .h-sub{color:var(--on-dark);}
+
+  /* ---------- bullet list ---------- */
+  .ticks{list-style:none;display:grid;gap:.75rem;margin-top:.4rem;}
+  .ticks li{display:flex;gap:.75rem;align-items:flex-start;color:var(--ink-soft);}
+  .ticks li::before{content:"";flex:none;width:8px;height:8px;margin-top:.62rem;border-radius:50%;background:#e0a98f;}
+  .cd-inner .ticks li{color:var(--on-dark-soft);}
+  .cd-inner .ticks li::before{background:var(--primary);}
+
+  /* ---------- topic tags (card 03) ---------- */
+  .topics{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;}
+  .topics span{font-size:.92rem;font-weight:500;padding:.5rem 1rem;border-radius:999px;
+    background:rgba(201,217,232,.16);border:1px solid rgba(201,217,232,.32);color:var(--on-dark);}
+
+  /* ---------- pull quote ---------- */
+  .pull{font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,2.2vw,1.5rem);
+    line-height:1.4;color:var(--on-dark);border-left:3px solid var(--primary);
+    padding-left:1.2rem;margin-bottom:1.4rem;}
+
+  /* ---------- detail panel: single column when no image ---------- */
+  .cd-inner.solo{grid-template-columns:1fr;}
+
+  /* ---------- Lekce: venues ---------- */
+  .venues{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem;margin-top:2.6rem;}
+  .venue{background:var(--primary-tint);border-radius:var(--radius);padding:2rem 1.8rem;
+    display:flex;flex-direction:column;gap:.55rem;border:1px solid rgba(46,74,102,.06);}
+  .venue .v-days{font-family:var(--display);font-size:1.6rem;line-height:1.1;}
+  .venue .v-place{font-weight:600;}
+  .venue .v-note{font-size:.94rem;color:var(--ink-soft);}
+  .venue .tag{margin-top:.3rem;}
+  @media(max-width:860px){.venues{grid-template-columns:1fr;}}
+
+  /* ---------- gallery ---------- */
+  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2.6rem;}
+  .gallery .ph-img{aspect-ratio:16/9;}
+  .gallery .ph-img img{object-fit:cover;}
+  @media(max-width:860px){.gallery{grid-template-columns:1fr;}}
+
+  /* ---------- CMS-ready block ---------- */
+  .cms-slot{margin-top:2.4rem;border:1.5px dashed rgba(46,74,102,.28);border-radius:var(--radius);
+    padding:1.8rem;background:rgba(252,227,218,.35);}
+  .cms-slot .cms-label{font-size:.74rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#b8734f;}
+  .cms-slot p{color:var(--ink-soft);margin-top:.5rem;font-size:.96rem;}
+
+  /* ---------- accordion (kurzy) ---------- */
+  .acc{margin-top:2rem;border-top:1px solid rgba(46,74,102,.14);}
+  .acc details{border-bottom:1px solid rgba(46,74,102,.14);}
+  .acc summary{cursor:pointer;list-style:none;padding:1.2rem .2rem;display:flex;
+    justify-content:space-between;align-items:center;gap:1rem;font-weight:600;}
+  .acc summary::-webkit-details-marker{display:none;}
+  .acc summary .chev{width:20px;height:20px;flex:none;position:relative;transition:transform .35s var(--ease);}
+  .acc summary .chev::before,.acc summary .chev::after{content:"";position:absolute;background:var(--accent);border-radius:2px;}
+  .acc summary .chev::before{top:50%;left:0;width:100%;height:2px;transform:translateY(-50%);}
+  .acc summary .chev::after{left:50%;top:0;height:100%;width:2px;transform:translateX(-50%);transition:opacity .3s ease;}
+  .acc details[open] summary .chev{transform:rotate(180deg);}
+  .acc details[open] summary .chev::after{opacity:0;}
+  .acc .acc-body{padding:0 .2rem 1.6rem;}
+  .cv{list-style:none;display:grid;gap:.65rem;}
+  .cv li{display:grid;grid-template-columns:5.2rem 1fr;gap:1rem;align-items:baseline;color:var(--ink-soft);font-size:.97rem;}
+  .cv li .yr{font-family:var(--display);color:var(--ink);font-size:1.05rem;}
+  @media(max-width:600px){.cv li{grid-template-columns:1fr;gap:.15rem;}}
+
+  /* ---------- feature block (nohy / plochonoží) ---------- */
+  .feature{background:var(--primary-tint);border-radius:var(--radius);
+    padding:clamp(1.8rem,4vw,3rem);margin-top:3rem;}
+  .feature .h-sub{margin-top:0;}
+  .stat{font-family:var(--display);font-size:clamp(2.2rem,5vw,3.2rem);line-height:1;color:var(--ink);margin-bottom:.3rem;}
+  .stat-row{display:grid;grid-template-columns:repeat(2,1fr);gap:1.6rem;margin:1.6rem 0;}
+  .stat-row .s-lbl{font-size:.94rem;color:var(--ink-soft);}
+  @media(max-width:600px){.stat-row{grid-template-columns:1fr;}}
+  .src-note{font-size:.84rem;color:var(--ink-soft);margin-top:1rem;font-style:italic;}
+
+
+  /* ---------- wide section layout ---------- */
+  .mid .eyebrow{justify-content:flex-start;}
+  .mid .h-sec{max-width:none;}
+  .mid p.lead{max-width:62ch;}
+  .h-sec.wide{max-width:none;}
+
+  /* wide single-column prose */
+  .prose.wide{max-width:none;}
+  .prose.wide p{line-height:1.72;}
+
+  /* wider hero */
+  .hero-lower{margin-top:1.8rem;max-width:62ch;}
+  .hero-copy .lead{margin-top:0;}
+  .hero-meta{margin-top:3rem;display:grid;grid-template-columns:repeat(3,1fr);
+    gap:clamp(1.5rem,4vw,3rem);}
+  .hm-item{display:grid;gap:.1rem;padding-left:1.1rem;border-left:2px solid var(--primary);}
+  .hm-item strong{font-family:var(--display);font-weight:400;
+    font-size:clamp(2.1rem,3.6vw,2.9rem);line-height:1;color:var(--ink);}
+  .hm-item span{font-size:.95rem;color:var(--ink-soft);}
+  @media(max-width:700px){.hero-meta{grid-template-columns:1fr;gap:1.3rem;}}
+
+  /* ---------- feature block refinements ---------- */
+  .feature .f-head{text-align:center;max-width:34ch;margin:0 auto 2rem;}
+  .stat-row{max-width:720px;margin-left:auto;margin-right:auto;text-align:center;}
+  .stat-one .stat{margin-bottom:.4rem;}
+  .feature .prose{margin-left:auto;margin-right:auto;}
+  .f-split{display:grid;grid-template-columns:1fr 1fr;gap:2rem clamp(1.5rem,4vw,3rem);
+    margin-top:2.2rem;max-width:70ch;margin-left:auto;margin-right:auto;text-align:left;}
+  .f-split h4{font-family:var(--sans);font-size:.78rem;font-weight:700;letter-spacing:.14em;
+    text-transform:uppercase;color:#b8734f;margin-bottom:.9rem;}
+  @media(max-width:700px){.f-split{grid-template-columns:1fr;}}
+  .feature .pull-light{font-family:var(--serif);font-style:italic;
+    font-size:clamp(1.15rem,2.4vw,1.55rem);line-height:1.4;color:var(--ink);
+    text-align:center;max-width:26ch;margin:2.4rem auto 1.6rem;}
+
+  /* ---------- venue address ---------- */
+  .venue .v-addr{font-size:.94rem;color:var(--ink-soft);}
+
+  /* ---------- kurzy: right-aligned years ---------- */
+  .cv li{grid-template-columns:4.7rem 1fr;}
+  .cv li .yr{text-align:right;white-space:nowrap;}
+  @media(max-width:600px){.cv li .yr{text-align:left;}}
+
 </style>
 </head>
 <body>
@@ -297,7 +416,6 @@
       <a href="#teenjoga">Teenjóga</a>
       <a href="#pro-skoly">Pro školy</a>
       <a href="#lekce">Lekce</a>
-      <a href="#bosa-noha">Bosá noha</a>
       <a href="#inspirace">Inspirace</a>
       <a href="#o-mne">O mně</a>
       <a href="#kontakt">Kontakt</a>
@@ -312,99 +430,107 @@
   </div>
   <div class="wrap hero-content">
     <h1>Jóga pro dospívající <em>pro tělo, dech a klidnou hlavu.</em></h1>
-    <p class="lead">[Krátká věta o tom, co lekce nabízejí — např. bezpečný prostor, kde se teenageři učí soustředění, práci s dechem a vnímání vlastního těla.]</p>
-    <div class="hero-cta">
-      <a href="#pro-skoly" class="btn btn-solid">Pro školy <span class="arrow">→</span></a>
-      <a href="#lekce" class="btn btn-ghost">Lekce</a>
+    <div class="hero-lower">
+      <div class="hero-copy">
+        <p class="lead">TEENJÓGA není zaměřená na výkon ani na dokonalé pozice. Podporuje zdravý vývoj dospívajících, správné držení těla, budování sebevědomí a zvládání stresu, to vše v bezpečné a přátelské atmosféře. A je hravá.</p>
+        <div class="hero-cta">
+          <a href="#pro-skoly" class="btn btn-solid">Pro školy <span class="arrow">→</span></a>
+          <a href="#lekce" class="btn btn-ghost">Lekce</a>
+        </div>
+      </div>
     </div>
     <div class="hero-meta">
-      <div><strong>13–19</strong>věk účastníků</div>
-      <div><strong>[XX]</strong>odučených hodin</div>
-      <div><strong>[XX]</strong>spolupracujících škol</div>
+      <div class="hm-item"><strong>2013</strong><span>vedu vlastní kurzy od</span></div>
+      <div class="hm-item"><strong>11–19</strong><span>věk účastnic</span></div>
+      <div class="hm-item"><strong>3×</strong><span>týdně v Praze</span></div>
     </div>
   </div>
 </section>
 
 <!-- ============ TEENJÓGA ============ -->
 <section class="section" id="teenjoga">
-  <div class="wrap reveal">
+  <div class="wrap reveal mid">
     <span class="eyebrow">Teenjóga</span>
-    <h2 class="h-sec">Jóga přizpůsobená dospívajícím</h2>
-    <p class="lead">[Odstavec o tom, čím se jóga pro teenagery liší od běžných lekcí — tempo, jazyk, témata, která dospívající skutečně řeší.] Klikni na kartu pro více.</p>
+    <h2 class="h-sec wide">Čím se TEENJÓGA liší</h2>
+    <p class="lead">Není zaměřená na výkon ani dokonalé pozice, ale na podporu zdravého vývoje dospívajících, budování sebevědomí, správné držení těla a zvládání stresu v bezpečné a přátelské atmosféře. Je hravá.</p>
 
     <div class="cards" id="cards">
       <button class="card" data-i="0" aria-expanded="false" aria-controls="cardDetail">
         <div class="c-top"><span class="num">01</span><span class="plus" aria-hidden="true"></span></div>
-        <h3>Tělo v pohybu</h3>
-        <p>[Krátký popis — práce s tělem v období, kdy se rychle mění.]</p>
+        <h3>Moje tělo a mysl</h3>
+        <p>Správné držení těla, fyzická i psychická kondice a zdravý respekt k vlastnímu tělu.</p>
       </button>
       <button class="card" data-i="1" aria-expanded="false" aria-controls="cardDetail">
         <div class="c-top"><span class="num">02</span><span class="plus" aria-hidden="true"></span></div>
         <h3>Dech a klid</h3>
-        <p>[Krátký popis — dechové techniky pro zvládání stresu a zkoušek.]</p>
+        <p>Jednoduché dechové techniky, které fungují i pár minut před testem.</p>
       </button>
       <button class="card" data-i="2" aria-expanded="false" aria-controls="cardDetail">
         <div class="c-top"><span class="num">03</span><span class="plus" aria-hidden="true"></span></div>
-        <h3>Hlava a soustředění</h3>
-        <p>[Krátký popis — pozornost, emoce a chvíle ticha.]</p>
+        <h3>Témata lekcí</h3>
+        <p>Devět témat, která souvisejí s každodenním životem dospívajících.</p>
       </button>
     </div>
 
     <div class="card-detail" id="cardDetail">
-      <div class="cd-clip"><div class="cd-inner" id="cdInner"></div></div>
+      <div class="cd-clip"><div class="cd-inner solo" id="cdInner"></div></div>
     </div>
   </div>
 </section>
 
-<!-- ============ PRO ŠKOLY (dark) ============ -->
+<!-- ============ PRO ŠKOLY ============ -->
 <section class="section dark" id="pro-skoly">
-  <div class="wrap reveal">
-    <div class="skoly-grid">
-      <div class="ph-img">
-        <span class="ph-tag">dočasná fotka</span>
-        <img src="https://picsum.photos/seed/proskoly/800/1000" alt="Dočasná ilustrační fotografie" loading="lazy">
-      </div>
-      <div>
-        <span class="eyebrow">Pro školy</span>
-        <h2 class="h-sec">Jóga jako součást školního dne</h2>
-        <p class="lead">[Odstavec pro vedení škol a pedagogy — jak lekce zapadnou do rozvrhu, pro jaké třídy se hodí a co od spolupráce čekat.]</p>
-        <div class="steps">
-          <div class="step"><span class="s-num">01</span><div><h3>Poptávka</h3><p>[Ozvete se a probereme potřeby školy, věk žáků a termíny.]</p></div></div>
-          <div class="step"><span class="s-num">02</span><div><h3>Ukázková lekce</h3><p>[Nezávazná ukázková lekce přímo u vás — uvidíte, jak probíhá.]</p></div></div>
-          <div class="step"><span class="s-num">03</span><div><h3>Pravidelný program</h3><p>[Domluvíme pravidelný harmonogram a formu, která vám sedí.]</p></div></div>
-        </div>
-        <a href="#kontakt" class="btn btn-ghost" style="margin-top:2rem;border-color:var(--accent-tint);color:var(--on-dark);">Domluvit ukázkovou lekci <span class="arrow">→</span></a>
-      </div>
+  <div class="wrap reveal mid">
+    <span class="eyebrow">Pro školy</span>
+    <h2 class="h-sec wide">Jóga jako součást školního dne</h2>
+    <p class="lead">TEENJÓGA přináší výhody jógových praktik do vzdělávání. Pomáháme školám integrovat jógové praktiky do školních aktivit.</p>
+
+    <div class="prose wide">
+      <p>Lekce jógy lze snadno začlenit do školního rozvrhu. Mohou probíhat jako <strong>jednorázové workshopy</strong>, <strong>pravidelné kroužky</strong>, součást hodin <strong>tělesné výchovy</strong> nebo krátké <strong>relaxační bloky</strong> během školního dne. Délku i obsah je možné přizpůsobit potřebám školy, věku žáků i časovým možnostem jednotlivých tříd. Připravujeme řešení a postupy šité na míru vašim potřebám.</p>
+      <p>Program je vhodný především pro žáky 2. stupně základních škol a studenty středních škol. Obsah lekcí respektuje věkové zvláštnosti dospívajících a zaměřuje se na podporu zdravého pohybu, správného držení těla, zvládání stresu, budování sebedůvěry a pozitivního vztahu k vlastnímu tělu.</p>
     </div>
+
+    <h3 class="h-sub">Proč jóga do škol patří</h3>
+    <div class="prose wide">
+      <p>Jóga jako součást školního dne přináší dětem a dospívajícím možnost zastavit se, protáhnout tělo a zklidnit mysl. Nejde však pouze o samotné cvičení. Jóga propojuje pohyb, vědomý dech a relaxaci, čímž podporuje celkovou fyzickou i psychickou pohodu žáků. V dnešní době, kdy jsou mladí lidé často vystaveni vysokým nárokům, informačnímu přetížení a stresu, může být několik minut jógy cenným prostorem pro regeneraci a načerpání nové energie.</p>
+      <p>Pravidelné zařazení jednoduchých jógových pozic pomáhá kompenzovat dlouhé sezení v lavicích, zlepšuje držení těla a podporuje zdravý pohybový rozvoj. Stejně důležitou součástí jógy jsou však dechová cvičení, která učí děti pracovat s pozorností, zklidnit se v náročných situacích a lépe zvládat emoce. Vědomé dýchání dokáže během několika minut snížit napětí a pomoci navrátit soustředění před další výukou.</p>
+      <p>Nedílnou součástí jógy je také relaxace. Krátké chvíle odpočinku vedou žáky k tomu, aby vnímali své tělo, rozpoznávali únavu a učili se efektivně regenerovat. Relaxační techniky mohou přispět ke zlepšení koncentrace, spánku i celkové atmosféry ve třídě. Jóga tak nabízí mnohem více než jen pohybovou aktivitu. Rozvíjí schopnost naslouchat sobě samému, podporuje duševní odolnost a vytváří zdravé návyky, které mohou děti provázet po celý život.</p>
+      <p>Výzkumy ukázaly, že jóga zlepšuje soustředění, klid, sociální soudržnost a celkovou pohodu. Školy, které jógu zavádějí, uvádějí zlepšení v chování studentů i zlepšení studijních výsledků.</p>
+    </div>
+
+    <a href="#kontakt" class="btn btn-ghost" style="margin-top:2.4rem;border-color:var(--accent-tint);color:var(--on-dark);">Domluvit lekci pro školu <span class="arrow">→</span></a>
   </div>
 </section>
 
 <!-- ============ LEKCE ============ -->
 <section class="section" id="lekce">
-  <div class="wrap reveal">
+  <div class="wrap reveal mid">
     <span class="eyebrow">Lekce</span>
-    <h2 class="h-sec">Otevřené lekce pro každého</h2>
-    <p class="lead">[Krátká věta — lekce dostupné i mimo školy, vhodné pro začátečníky. Stačí přijít.]</p>
-    <div class="schedule">
-      <div class="row"><div class="day">[Pondělí]</div><div class="time">[17:00–18:00]</div><div class="place">[Studio / adresa]</div><span class="tag">Začátečníci</span></div>
-      <div class="row"><div class="day">[Středa]</div><div class="time">[18:00–19:15]</div><div class="place">[Studio / adresa]</div><span class="tag">Mírně pokročilí</span></div>
-      <div class="row"><div class="day">[Sobota]</div><div class="time">[09:30–10:45]</div><div class="place">[Studio / adresa]</div><span class="tag">Rodiče &amp; teens</span></div>
-    </div>
-    <p style="margin-top:1.8rem;color:var(--ink-soft);font-size:.95rem;">[Poznámka — např. cena za lekci, rezervace předem, co s sebou.]</p>
-  </div>
-</section>
+    <h2 class="h-sec">Kde se potkáme</h2>
+    <p class="lead">Tento školní rok se můžeme potkat na dvou místech v Praze.</p>
 
-<!-- ============ BOSÁ NOHA ============ -->
-<section class="section bosa" id="bosa-noha">
-  <div class="wrap reveal bosa-grid">
-    <div class="ph-img">
-      <span class="ph-tag">dočasná fotka</span>
-      <img src="https://picsum.photos/seed/bosanoha/800/1000" alt="Dočasná ilustrační fotografie" loading="lazy">
+    <div class="venues">
+      <div class="venue">
+        <div class="v-days">Pondělí &amp; čtvrtek</div>
+        <div class="v-place">Podiatrická ambulance, Praha&nbsp;–&nbsp;Petrovice</div>
+        <div class="v-addr">Ohmova 271, 109 00 Praha-Petrovice</div>
+      </div>
+      <div class="venue">
+        <div class="v-days">Středa</div>
+        <div class="v-place">DůmUm, Praha&nbsp;–&nbsp;Hostivař</div>
+        <div class="v-addr">Golfová 910/10, 102 00 Praha 15</div>
+        <div class="v-note">Na lekce v DoměUm je nutné být zapsán na celé pololetí, případně na celý školní rok.</div>
+      </div>
     </div>
-    <div>
-      <span class="eyebrow" style="color:var(--ink-soft);">Bosá noha</span>
-      <p class="quote" style="margin-top:1.2rem;"><span class="quote-mark">„</span>[Sem patří krátká, výstižná myšlenka, která vystihuje přístup „bosá noha" — návrat k základům a pevné půdě pod nohama.]</p>
-      <p class="lead" style="color:var(--ink-soft);max-width:42ch;margin-top:1.6rem;">[Odstavec, který vysvětlí, co „Bosá noha" znamená — jméno přístupu, projektu nebo filozofie. Klidně osobní příběh nebo princip, na kterém lekce stojí.]</p>
+
+    <div class="cms-slot">
+      <span class="cms-label">Připravujeme</span>
+      <p>Konkrétní termíny a časy vypsaných lekcí sem doplníme. Tato část bude spravovaná přes redakční systém, aby šla průběžně aktualizovat.</p>
+    </div>
+
+    <div class="gallery">
+      <div class="ph-img"><img src="brand-assets/pictures/image-09.jpg" alt="Cvičení na balančních pomůckách venku" loading="lazy"></div>
+      <div class="ph-img"><img src="brand-assets/pictures/image-10.jpg" alt="Dívky při jógové lekci" loading="lazy"></div>
     </div>
   </div>
 </section>
@@ -413,41 +539,135 @@
 <section class="section" id="inspirace">
   <div class="wrap reveal">
     <span class="eyebrow">Inspirace</span>
-    <h2 class="h-sec">Co říkají teenageři</h2>
-    <p class="lead">[Krátký úvod — autentické ohlasy nebo myšlenky od dospívajících, kteří jógu zkoušeli.]</p>
-    <div class="insp-grid">
-      <div class="insp-item">
-        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
-        <blockquote>„[Krátká citace — např. Poprvé jsem si uvědomila, jak moc mi pomáhá jen chvíli vydechnout.]"</blockquote>
-        <p class="insp-src">— [Jméno / věk / škola]</p>
-      </div>
-      <div class="insp-item">
-        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
-        <blockquote>„[Druhá citace — Myslel jsem, že jóga není pro mě, ale teď se na ni těším každý týden.]"</blockquote>
-        <p class="insp-src">— [Jméno / věk / škola]</p>
-      </div>
-      <div class="insp-item">
-        <img src="brand-assets/logo/icon-full-color.svg" alt="" class="insp-icon" aria-hidden="true">
-        <blockquote>„[Třetí citace — pohled rodiče nebo pedagoga na změnu, kterou si všimli.]"</blockquote>
-        <p class="insp-src">— [Jméno / role]</p>
-      </div>
+    <h2 class="h-sec">Inspirace</h2>
+    <p class="lead">Místo pro články, tipy a myšlenky k józe pro dospívající.</p>
+    <div class="cms-slot">
+      <span class="cms-label">Připravujeme</span>
+      <p>Obsah této sekce bude spravovaný přes redakční systém, aby šel doplňovat průběžně bez zásahu do kódu stránky.</p>
     </div>
   </div>
 </section>
 
 <!-- ============ O MNĚ ============ -->
 <section class="section" id="o-mne">
-  <div class="wrap reveal grid-2" style="align-items:center;">
-    <div class="portrait"><span class="ph-note">[Sem vlož fotografii — ideálně na výšku]</span></div>
-    <div>
-      <span class="eyebrow">O mně</span>
-      <h2 class="h-sec">[Jméno lektorky]</h2>
-      <p class="lead">[Krátké osobní představení — kdo jsi, proč jóga a proč právě s dospívajícími.]</p>
-      <ul class="creds">
-        <li>[Vzdělání / lektorský výcvik a rok]</li>
-        <li>[Zkušenost s prací s dětmi a mládeží]</li>
-        <li>[Případná certifikace, kurzy nebo specializace]</li>
-      </ul>
+  <div class="wrap reveal mid">
+    <span class="eyebrow">O mně</span>
+    <div class="grid-2" style="align-items:center;text-align:left;margin-top:1.4rem;">
+      <div class="portrait" style="padding:0;">
+        <img src="brand-assets/pictures/image-04.jpg" alt="Petra Petrů" style="width:100%;height:100%;object-fit:cover;">
+      </div>
+      <div>
+        <h2 class="h-sec" style="margin-top:0;">Petra Petrů</h2>
+        <div class="prose">
+          <p>Jmenuji se Petra Petrů a jsem maminka dvou báječných kluků, dnes už vysokoškoláků.</p>
+          <p>Sama jsem vystudovala ekonomický obor na VŠE. Nicméně protože se můj mladší syn narodil s pohybovým handicapem a od narození jsem s ním rehabilitovala, společně jsme objevili kouzlo dětské jógy pod vedením Hanky Luhanové. A já jsem postupně pod hlavičkou ČADJ absolvovala první semináře.</p>
+        </div>
+      </div>
+    </div>
+
+    <h3 class="h-sub">Jak jsem se dostala k józe?</h3>
+    <div class="prose wide">
+      <p>Za to vděčím nejspíš mojí mamince. Celý život se ráda hýbe. Mimo jiné cvičí jógu v systému Jóga v denním životě víc než 40 let.</p>
+      <p>A já se také ráda hýbu. Celé dětství i dospívání jsem závodně šermovala. A protože šerm jednostranně zatěžuje tělo, učili nás trenéři kompenzační cviky inspirované Jiřím Čumpelíkem.</p>
+      <p>Po narození dětí jsem se potkala s Olinou Tajovskou a dlouhá léta jsem chodila na její lekce. Velmi se mi líbí její přístup. Další velikou inspirací je pro mě Lucka Königová. Několik letních týdnů jsem strávila v Hlavici, kde jsem poznala další podoby jógy, vedle jiných semináře Jóga v rehabilitaci Martiny Ježkové.</p>
+    </div>
+
+    <h3 class="h-sub">Jak vypadají naše lekce jógy pro teens?</h3>
+    <div class="prose wide">
+      <p>Zaměřujeme se na vnímání těla a jeho správné držení, na rovnováhu, která teenkám dodá přirozené sebevědomí a pomůže jim respektovat sebe i své okolí. Učíme se také odpočívat.</p>
+      <p>Hodiny jsou hravé, doplněné o balanční cvičení na nestabilních plochách a jsou vždy přizpůsobeny momentální náladě, potřebám a rozpoložení skupinky.</p>
+    </div>
+
+    <h3 class="h-sub">Mojí specializací jsou teenky</h3>
+    <div class="prose wide">
+      <p>Některé děti ze skupinek tříleťáků jsem postupně dovedla až do puberty. A tu jsem zjistila, že mě tato věková kategorie v posledních letech baví nejvíc. V současné době tedy vedu lekce teenjógy, a to <strong>pouze pro dívky</strong>.</p>
+      <p>Mladé slečny se naučí lépe vnímat své tělo, stanovovat si hranice, učíme se cviky na protažení zkrácených partií, uvolnění napětí a cviky na posílení oslabených částí těla. Provádím slečny meditací i relaxací, stanovujeme si záměr, zkoušíme sílu muder a manter.</p>
+      <p>Nabízím slečnám cviky proti plochonoží, cviky na nestabilních plochách a prvky, které můžou zařadit do běžného dne, třeba při čekání na autobus nebo ve frontě na oběd. Věřím, že to mladé slečny baví a naše společná setkání jsou jim zároveň k užitku.</p>
+    </div>
+
+    <!-- --- feature: nohy a plochonoží --- -->
+    <div class="feature">
+      <h3 class="h-sub f-head">Proč doplňuji lekce o cvičení na nestabilních plochách a o cviky proti plochonoží?</h3>
+
+      <div class="stat-row">
+        <div class="stat-one">
+          <div class="stat">98 %</div>
+          <div class="s-lbl">dětí se rodí se zdravýma nohama</div>
+        </div>
+        <div class="stat-one">
+          <div class="stat">1/3</div>
+          <div class="s-lbl">dětí ve věku 6 let má už deformovanou nožku</div>
+        </div>
+      </div>
+
+      <div class="prose" style="max-width:70ch;">
+        <p>Otlaky, drápovité prstce, vadné postavení pat, plochonoží, zarůstající nehty. V průběhu prvních dvanácti let se noha stává pevnou a klenutou. V dospívání ale dochází k výrazným změnám: děti rychle rostou a kosti rostou rychleji než svaly a vazy, což vede k jejich oslabení.</p>
+      </div>
+
+      <div class="f-split">
+        <div>
+          <h4>Co nožní klenbě škodí</h4>
+          <ul class="ticks">
+            <li>Dlouhé sezení v lavicích a stání</li>
+            <li>Nošení těžkých batohů</li>
+            <li>Nadváha</li>
+            <li>Hormonální změny v dospívání</li>
+            <li>Úzké boty s tvrdou, neohebnou podrážkou</li>
+            <li>Malé ponožky</li>
+          </ul>
+        </div>
+        <div>
+          <h4>Co nožní klenbě pomáhá</h4>
+          <ul class="ticks">
+            <li>Posilování a cviky na aktivaci nožní klenby</li>
+            <li>Chůze naboso</li>
+            <li>Cvičení na nestabilních plochách</li>
+            <li>Regulace hmotnosti</li>
+            <li>Konzultace s lékařem nebo fyzioterapeutem</li>
+          </ul>
+        </div>
+      </div>
+
+      <p class="pull-light">„Naše nohy nás nosí celý život. Nesou váhu celého těla.“</p>
+
+      <div class="prose" style="max-width:70ch;margin-top:0;">
+        <p>Umožňují nám vykonávat spoustu různých činností a aktivit. Díky nohám chodíme, běháme, skáčeme, jezdíme na kole, lyžujeme, bruslíme. A podle toho bychom se k našim nohám měli chovat, a to od nejranějšího dětství až do dospělosti a stáří.</p>
+        <p>To je právě jeden z důvodů, proč doplňuji lekce o cvičení na nestabilních plochách a o cviky proti plochonoží. A druhým důležitým důvodem je, že to teenky prostě baví.</p>
+        <p class="src-note">Zdroj údajů o vývoji nohy: web Lékařského podiatrického centra. <!-- TODO: doplnit odkaz na zdroj --></p>
+      </div>
+    </div>
+
+    <!-- --- accordion: kurzy a praxe --- -->
+    <div class="acc">
+      <details>
+        <summary>Kurzy a vzdělání <span class="chev" aria-hidden="true"></span></summary>
+        <div class="acc-body">
+          <p style="color:var(--ink-soft);margin-bottom:1.2rem;">Vypisuji ty pro mě nejdůležitější.</p>
+          <ul class="cv">
+            <li><span class="yr">2025</span><span>Jóga v rehabilitaci, pokročilí, Martina Ježková, přímá spolupracovnice MUDr. Koláře</span></li>
+            <li><span class="yr">2024–2025</span><span>Instruktor Zdravotní tělesné výchovy (150 hodin)</span></li>
+            <li><span class="yr">2020</span><span>Funkční trénink dětí a dospívajících, CKP Dobřichovice (Hybš a Šádek)</span></li>
+            <li><span class="yr">2019</span><span>Jóga v rehabilitaci, základní kurz, Martina Ježková</span></li>
+            <li><span class="yr">2018</span><span>Jóga pro děti II, Miluše Čadílková<br>Chodidlo a noha, IQ pohyb</span></li>
+            <li><span class="yr">2017</span><span>Jóga s teenagery, Česká asociace dětské jógy (ČADJ)</span></li>
+            <li><span class="yr">2016</span><span>Jógové hry pro předškoláky, ČADJ<br>Jógové hry v mladším školním věku, ČADJ</span></li>
+            <li><span class="yr">2015</span><span>Metodika cvičení dětské jógy II., ČADJ</span></li>
+            <li><span class="yr">2014</span><span>Jógová terapie dětí, ČADJ<br>Kurz reflexní terapie manželů Patakyových</span></li>
+            <li><span class="yr">2013</span><span>Metodika cvičení dětské jógy, ČADJ</span></li>
+          </ul>
+          <p style="color:var(--ink-soft);margin-top:1.2rem;">Pravidelně se účastním Setkání cvičitelů dětské jógy.</p>
+        </div>
+      </details>
+      <details>
+        <summary>Praxe a spolupráce <span class="chev" aria-hidden="true"></span></summary>
+        <div class="acc-body">
+          <div class="prose wide" style="margin-top:0;">
+            <p>Samostatně vedu kurzy dětské jógy a cvičení na balančních pomůckách <strong>od roku 2013</strong>.</p>
+            <p>Předtím jsem vedla odpolední kroužky v družině na ZŠ Křimická, Praha 15, pod patronací podiatrické ambulance v Praze 15.</p>
+            <p>S podiatrickou ambulancí spolupracuji dodnes. Pondělní a čtvrteční kurzy vedu na poliklinice Petrovice, ve středu mám lekci v DoměUm Praha 15.</p>
+          </div>
+        </div>
+      </details>
     </div>
   </div>
 </section>
@@ -458,14 +678,22 @@
     <div>
       <span class="eyebrow">Kontakt</span>
       <h2 class="h-sec">Ozvěte se</h2>
-      <p class="lead">[Krátká věta — pro školy i jednotlivce. Napište kdykoliv, ráda odpovím.]</p>
+      <p class="lead">Máte-li jakékoli dotazy k józe pro teens, k programům pro školy, bosé turistice nebo se potřebujete doptat na obecné otázky, račte psát nebo volat.</p>
       <div class="c-list">
-        <div class="c-item"><div class="c-label">E-mail</div><a class="c-val" href="mailto:ahoj@jogaproteens.cz">ahoj@jogaproteens.cz</a></div>
-        <div class="c-item"><div class="c-label">Telefon</div><a class="c-val" href="tel:+420000000000">[+420 000 000 000]</a></div>
-        <div class="c-item"><div class="c-label">Instagram</div><a class="c-val" href="#">[@jogaproteens]</a></div>
+        <div class="c-item">
+          <div class="c-label">E-mail</div>
+          <a class="c-val" href="mailto:petra@jogaproteens.cz">petra@jogaproteens.cz</a>
+        </div>
+        <div class="c-item">
+          <div class="c-label">Telefon</div>
+          <a class="c-val" href="tel:+420603866250">+420 603 866 250</a>
+        </div>
       </div>
+      <a href="mailto:petra@jogaproteens.cz" class="btn btn-solid" style="margin-top:2rem;">Napsat e-mail <span class="arrow">→</span></a>
     </div>
-    <div><a href="mailto:ahoj@jogaproteens.cz" class="btn btn-solid">Napsat e-mail <span class="arrow">→</span></a></div>
+    <div class="ph-img" style="aspect-ratio:3/4;">
+      <img src="brand-assets/pictures/image-20.jpg" alt="Petra Petrů v meditačním sedu" loading="lazy">
+    </div>
   </div>
 </section>
 
@@ -478,7 +706,6 @@
         <a href="#teenjoga">Teenjóga</a>
         <a href="#pro-skoly">Pro školy</a>
         <a href="#lekce">Lekce</a>
-        <a href="#bosa-noha">Bosá noha</a>
         <a href="#inspirace">Inspirace</a>
         <a href="#o-mne">O mně</a>
         <a href="#kontakt">Kontakt</a>
@@ -486,7 +713,7 @@
     </div>
     <div class="foot-bottom">
       <span>jogaproteens.cz</span>
-      <span>© <span id="year"></span> Jóga pro teens · [doplň drobné údaje]</span>
+      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens</span>
     </div>
   </div>
 </footer>
@@ -518,18 +745,40 @@
 
   // ---- Teenjóga expanding cards ----
   const cardContent = [
-    { h:"Tělo v pohybu",
-      p:["[Delší text o práci s tělem — držení, uvolnění, vnímání pohybu v období, kdy se tělo dospívajícího rychle mění.]",
-         "[Druhý odstavec — jak vypadá taková část lekce v praxi.]"],
-      seed:"telo" },
-    { h:"Dech a klid",
-      p:["[Delší text o dechu — jednoduché techniky, které pomáhají zvládat stres, trému a nápor zkoušek.]",
-         "[Druhý odstavec — kdy se tyto techniky hodí i mimo lekci.]"],
-      seed:"dech" },
-    { h:"Hlava a soustředění",
-      p:["[Delší text o pozornosti — práce s myšlenkami, emocemi a krátké chvíle ticha uprostřed všeho okolo.]",
-         "[Druhý odstavec — co si z toho dospívající odnesou.]"],
-      seed:"hlava" }
+    {
+      h: "Moje tělo a mysl",
+      body:
+        '<ul class="ticks">' +
+        '<li>Podporujeme správné držení těla</li>' +
+        '<li>Pracujeme na zlepšení fyzické i psychické kondice</li>' +
+        '<li>Kompenzujeme dlouhé sezení v lavicích, u počítače a s mobilem v ruce</li>' +
+        '<li>Učíme se zdravému vztahu a respektu k vlastnímu tělu</li>' +
+        '<li>Učíme se zvládat stres ve škole i v běžném životě</li>' +
+        '</ul>'
+    },
+    {
+      h: "Dech a klid",
+      body:
+        '<p class="pull">„Stres není nepřítel. Je to jen signál, že ti na výsledku záleží. Když zklidníš dech, zklidníš i hlavu."</p>' +
+        '<p>Dechové techniky, které jsou jednoduché, rychlé a dají se použít přímo před testem nebo během stresu. ' +
+        'Kontrolované pomalé dýchání pomáhá aktivovat uklidňující část nervového systému a zlepšuje soustředění.</p>'
+    },
+    {
+      h: "Témata lekcí",
+      body:
+        '<p>Témata, která souvisejí s každodenním životem dospívajících.</p>' +
+        '<div class="topics">' +
+        '<span>Najdi svůj klid</span>' +
+        '<span>Sebevědomí / sebehodnota</span>' +
+        '<span>Přátelství a spolupráce</span>' +
+        '<span>Jak na stres před zkouškami</span>' +
+        '<span>Sociální sítě × detox</span>' +
+        '<span>Rovnováha v životě</span>' +
+        '<span>Cesta k lepšímu spánku</span>' +
+        '<span>Emoce a myšlenky pod kontrolou</span>' +
+        '<span>Jáma / nijáma</span>' +
+        '</div>'
+    }
   ];
 
   const detail = document.getElementById('cardDetail');
@@ -539,13 +788,7 @@
 
   function render(i){
     const c = cardContent[i];
-    inner.innerHTML =
-      '<div>' +
-        '<h3>'+c.h+'</h3>' +
-        c.p.map(t => '<p>'+t+'</p>').join('') +
-      '</div>' +
-      '<div class="ph-img"><span class="ph-tag">dočasná fotka</span>' +
-        '<img src="https://picsum.photos/seed/'+c.seed+'/700/520" alt="Dočasná ilustrační fotografie" loading="lazy"></div>';
+    inner.innerHTML = '<div><h3>' + c.h + '</h3>' + c.body + '</div>';
   }
 
   function close(){
@@ -561,9 +804,7 @@
       render(i);
       cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
       card.classList.add('active'); card.setAttribute('aria-expanded','true');
-      // replay the inner fade when switching between already-open cards
       if (detail.classList.contains('open')){
-        inner.style.animation='none'; void inner.offsetWidth;
         detail.classList.remove('open'); void detail.offsetWidth;
       }
       detail.classList.add('open');
