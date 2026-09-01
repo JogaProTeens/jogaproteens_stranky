@@ -398,6 +398,34 @@
   .cv li .yr{text-align:right;white-space:nowrap;}
   @media(max-width:600px){.cv li .yr{text-align:left;}}
 
+
+  /* ---------- mobile hero logo (in flow, between title and lead) ---------- */
+  .hero-deco-m{display:none;}
+  @media(max-width:900px){
+    .hero-deco{display:none;}
+    .hero-deco-m{display:block;margin:2rem 0 .5rem;}
+    .hero-deco-m img{height:auto;width:min(52vw,220px);margin:0 auto;}
+    .hero-lower{margin-top:1rem;}
+  }
+
+  /* ---------- mobile: detail panel sits inside the card grid ---------- */
+  @media(max-width:860px){
+    .card-detail{grid-column:1/-1;}
+    .card-detail.open{margin-top:1rem;margin-bottom:.4rem;}
+  }
+
+  /* ---------- small-screen tightening ---------- */
+  @media(max-width:520px){
+    .hero h1{font-size:clamp(2.05rem,9vw,3rem);}
+    .h-sec{font-size:clamp(1.75rem,7.5vw,2.4rem);}
+    .stat{font-size:2.4rem;}
+    .venue{padding:1.5rem 1.3rem;}
+    .card{padding:1.6rem 1.4rem;}
+    .cd-inner{padding:1.5rem 1.3rem;}
+    .feature{padding:1.5rem 1.2rem;}
+    .foot-inner{flex-direction:column;gap:1.2rem;}
+    .foot-links{gap:.9rem 1.1rem;}
+  }
 </style>
 </head>
 <body>
@@ -430,6 +458,7 @@
   </div>
   <div class="wrap hero-content">
     <h1>Jóga pro dospívající <em>pro tělo, dech a klidnou hlavu.</em></h1>
+    <div class="hero-deco-m" aria-hidden="true"><img src="brand-assets/logo/icon-full-color.svg" alt=""></div>
     <div class="hero-lower">
       <div class="hero-copy">
         <p class="lead">TEENJÓGA není zaměřená na výkon ani na dokonalé pozice. Podporuje zdravý vývoj dospívajících, správné držení těla, budování sebevědomí a zvládání stresu, to vše v bezpečné a přátelské atmosféře. A je hravá.</p>
@@ -783,8 +812,19 @@
 
   const detail = document.getElementById('cardDetail');
   const inner = document.getElementById('cdInner');
+  const cardsWrap = document.getElementById('cards');
   const cards = [...document.querySelectorAll('.card')];
+  const isPhone = () => window.matchMedia('(max-width:860px)').matches;
   let current = -1;
+
+  // on phones the panel is moved directly beneath the tapped card
+  function placeDetail(card){
+    const target = isPhone() ? card : cardsWrap;
+    if (detail.previousElementSibling !== target){
+      target.after(detail);
+      void detail.offsetWidth;
+    }
+  }
 
   function render(i){
     const c = cardContent[i];
@@ -797,6 +837,11 @@
     current = -1;
   }
 
+  window.addEventListener('resize', () => {
+    if (current > -1) placeDetail(cards[current]);
+    else if (detail.previousElementSibling !== cardsWrap) cardsWrap.after(detail);
+  }, {passive:true});
+
   cards.forEach(card => {
     card.addEventListener('click', () => {
       const i = +card.dataset.i;
@@ -807,6 +852,7 @@
       if (detail.classList.contains('open')){
         detail.classList.remove('open'); void detail.offsetWidth;
       }
+      placeDetail(card);
       detail.classList.add('open');
       current = i;
     });
