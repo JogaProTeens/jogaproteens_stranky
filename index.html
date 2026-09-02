@@ -446,7 +446,19 @@
     .foot-inner{flex-direction:column;gap:1.2rem;}
     .foot-links{gap:.9rem 1.1rem;}
   }
+
+  /* ---------- drifting dandelion seed ---------- */
+  #seed-canvas{position:fixed;inset:0;width:100%;height:100%;
+    z-index:40;pointer-events:none;opacity:0;transition:opacity 1.2s ease;}
+  #seed-canvas.on{opacity:1;}
+  @media(prefers-reduced-motion:reduce){#seed-canvas{display:none;}}
 </style>
+<script type="importmap">
+{"imports":{
+  "three":"https://unpkg.com/three@0.184.0/build/three.module.js",
+  "three/addons/":"https://unpkg.com/three@0.184.0/examples/jsm/"
+}}
+</script>
 </head>
 <body>
 <div class="breath" aria-hidden="true"></div>
@@ -877,6 +889,162 @@
       current = i;
     });
   });
+</script>
+
+
+<script type="module">
+/* Dandelion seed: drifts across the page on a gentle wind, now and then. */
+(() => {
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (REDUCED || innerWidth < 860) return;          // skip on phones and reduced-motion
+
+  const MODEL      = 'brand-assets/models/dandelion-seed.glb';
+  const FIRST_WAIT = 12000;                          // first flight after ~12s
+  const GAP_MIN    = 45000, GAP_MAX = 95000;         // then every 45-95s
+  const FALL_MS    = 25500;                          // ~25.5s to fall (15% quicker)
+  const MAX_TILT   = Math.PI/2;                      // 90°: achene may reach horizontal, never above
+
+  let THREE, renderer, scene, camera, seed, canvas, running = false, raf = 0;
+
+  const rand = (a, b) => a + Math.random() * (b - a);
+
+  async function init(){
+    THREE = await import('three');
+    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+
+    canvas = document.createElement('canvas');
+    canvas.id = 'seed-canvas';
+    document.body.appendChild(canvas);
+
+    renderer = new THREE.WebGLRenderer({ canvas, alpha:true, antialias:true });
+    renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+    renderer.setSize(innerWidth, innerHeight, false);
+
+    scene  = new THREE.Scene();
+    camera = new THREE.PerspectiveCamera(35, innerWidth/innerHeight, 0.1, 100);
+    camera.position.z = 10;
+
+    scene.add(new THREE.AmbientLight(0xffffff, 1.4));
+    const key = new THREE.DirectionalLight(0xffffff, 1.6);
+    key.position.set(2, 4, 5); scene.add(key);
+    const rim = new THREE.DirectionalLight(0xF7C9B8, 0.7);
+    rim.position.set(-3, -1, 2); scene.add(rim);
+
+    const gltf = await new GLTFLoader().loadAsync(MODEL);
+    const obj = gltf.scene;
+
+    // centre the model on its own origin and normalise its size
+    const box = new THREE.Box3().setFromObject(obj);
+    const size = box.getSize(new THREE.Vector3());
+    const centre = box.getCenter(new THREE.Vector3());
+    obj.position.sub(centre);
+    const target = 0.69;   // ~60% of the original size
+    obj.scale.setScalar(target / Math.max(size.x, size.y, size.z));
+
+    seed = new THREE.Group();
+    seed.add(obj);
+    seed.visible = false;
+    scene.add(seed);
+
+    addEventListener('resize', () => {
+      renderer.setSize(innerWidth, innerHeight, false);
+      camera.aspect = innerWidth/innerHeight;
+      camera.updateProjectionMatrix();
+    }, {passive:true});
+
+    schedule(1200);
+  }
+
+  function visibleSize(z){
+    const h = 2 * Math.tan((camera.fov * Math.PI/180) / 2) * (camera.position.z - z);
+    return { h, w: h * camera.aspect };
+  }
+
+  function fly(){
+    if (running) return;
+    running = true;
+
+    const depth    = rand(-2.5, 1.5);                // some seeds pass nearer than others
+    const { w, h } = visibleSize(depth);
+    const margin   = 1.6;
+
+    // falls from above the viewport to below it
+    const startY = h/2 + margin;
+    const endY   = -(h/2 + margin);
+
+    // horizontal track: a starting point, a slow sideways drift, and two
+    // overlapping sways so the path wanders instead of dropping straight
+    const baseX  = rand(-w*0.42, w*0.42);
+    const drift  = rand(-w*0.22, w*0.22);
+    const swayA1 = rand(0.35, 0.95), swayF1 = rand(0.7, 1.5), swayP1 = rand(0, 6.28);
+    const swayA2 = rand(0.12, 0.42), swayF2 = rand(1.8, 3.2), swayP2 = rand(0, 6.28);
+
+    const dur = FALL_MS * rand(0.85, 1.25);
+
+    // The achene is the ballast, so the pappus never ends up below it.
+    // Free spin about the vertical axis, plus a lean that may swing anywhere
+    // in the lower hemisphere: down to horizontal in any direction, never above.
+    seed.rotation.order = 'YXZ';
+    let yaw = rand(0, 6.28);
+    const yawRate = rand(-0.55, 0.55);               // spin about its own axis
+    const tiltBase = rand(0.25, 0.95);               // resting lean
+    const tiltAmp  = rand(0.20, 0.65);               // how much the lean breathes
+    const tiltFreq = rand(0.45, 1.15);
+    const azRate   = rand(-1.6, 1.6);                // the lean circles slowly
+    let az = rand(0, 6.28);
+
+    seed.rotation.set(0, yaw, 0);
+    seed.position.set(baseX, startY, depth);
+    seed.visible = true;
+    canvas.classList.add('on');
+
+    const t0 = performance.now();
+
+    (function step(now){
+      const t = Math.min((now - t0) / dur, 1);
+
+      // near-constant fall, with a touch of ease so it drifts in gently
+      const fall = t < .12 ? (t*t)/0.12*0.5 + t*0.5 : t;
+
+      seed.position.y = startY + (endY - startY) * fall;
+      seed.position.x = baseX + drift * t
+                      + Math.sin(t * Math.PI * 2 * swayF1 + swayP1) * swayA1
+                      + Math.sin(t * Math.PI * 2 * swayF2 + swayP2) * swayA2;
+
+      const d = 0.016;
+      yaw += yawRate * d;
+      az  += azRate  * d;
+      let tilt = tiltBase + Math.sin(t * Math.PI * 2 * tiltFreq) * tiltAmp;
+      if (tilt < 0) tilt = -tilt;
+      if (tilt > MAX_TILT) tilt = MAX_TILT;          // never above horizontal
+      seed.rotation.y = yaw;
+      seed.rotation.x = Math.cos(az) * tilt;
+      seed.rotation.z = Math.sin(az) * tilt;
+
+      renderer.render(scene, camera);
+
+      if (t < 1){ raf = requestAnimationFrame(step); }
+      else {
+        seed.visible = false;
+        canvas.classList.remove('on');
+        renderer.render(scene, camera);
+        running = false;
+        schedule(rand(GAP_MIN, GAP_MAX));
+      }
+    })(t0);
+  }
+
+  function schedule(ms){
+    setTimeout(() => {
+      if (document.hidden) return schedule(8000);    // wait for the tab to come back
+      fly();
+    }, ms);
+  }
+
+  const start = () => init().catch(err => console.warn('seed animation skipped:', err));
+  if ('requestIdleCallback' in window) requestIdleCallback(() => setTimeout(start, FIRST_WAIT));
+  else setTimeout(start, FIRST_WAIT);
+})();
 </script>
 
 </body>
