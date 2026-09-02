@@ -975,12 +975,14 @@
     const startY = h/2 + margin;
     const endY   = -(h/2 + margin);
 
-    // horizontal track: a starting point, a slow sideways drift, and two
-    // overlapping sways so the path wanders instead of dropping straight
-    const baseX  = rand(-w*0.42, w*0.42);
-    const drift  = rand(-w*0.22, w*0.22);
-    const swayA1 = rand(0.35, 0.95), swayF1 = rand(0.7, 1.5), swayP1 = rand(0, 6.28);
-    const swayA2 = rand(0.12, 0.42), swayF2 = rand(1.8, 3.2), swayP2 = rand(0, 6.28);
+    // Horizontal track: a starting point, a slow sideways drift and two
+    // overlapping sways. Every amplitude is a fraction of the visible width,
+    // so the path scales to the screen instead of overshooting narrow ones.
+    const baseX  = rand(-0.22, 0.22) * w;
+    const drift  = rand(-0.12, 0.12) * w;
+    const swayA1 = rand(0.05, 0.13) * w, swayF1 = rand(0.7, 1.5), swayP1 = rand(0, 6.28);
+    const swayA2 = rand(0.02, 0.05) * w, swayF2 = rand(1.8, 3.2), swayP2 = rand(0, 6.28);
+    const xLimit = w * 0.46;                         // keep it inside the frame
 
     const dur = FALL_MS * rand(0.85, 1.25);
 
@@ -1010,9 +1012,12 @@
       const fall = t < .12 ? (t*t)/0.12*0.5 + t*0.5 : t;
 
       seed.position.y = startY + (endY - startY) * fall;
-      seed.position.x = baseX + drift * t
-                      + Math.sin(t * Math.PI * 2 * swayF1 + swayP1) * swayA1
-                      + Math.sin(t * Math.PI * 2 * swayF2 + swayP2) * swayA2;
+      let px = baseX + drift * t
+             + Math.sin(t * Math.PI * 2 * swayF1 + swayP1) * swayA1
+             + Math.sin(t * Math.PI * 2 * swayF2 + swayP2) * swayA2;
+      if (px >  xLimit) px =  xLimit;                // never wander off the edge
+      if (px < -xLimit) px = -xLimit;
+      seed.position.x = px;
 
       const d = 0.016;
       yaw += yawRate * d;
