@@ -132,16 +132,41 @@
   .hero-deco{position:absolute;right:clamp(1rem,5vw,4.5rem);top:calc(clamp(3rem,8vw,6rem) + calc(3 * clamp(2.8rem,8vw,5.8rem) * 1.02) / 2);transform:translateY(-50%);z-index:1;pointer-events:none;}
   .hero-deco img{display:block;height:50vh;width:auto;max-width:none;opacity:.9;}
   .breath{
-    position:fixed;z-index:2;width:min(70vw,560px);aspect-ratio:1;right:-6%;top:8%;
-    background:radial-gradient(circle at 40% 40%, var(--primary), var(--primary-tint));
-    border-radius:46% 54% 60% 40% / 50% 44% 56% 50%;filter:blur(8px);opacity:.85;
-    animation:breathe 7s ease-in-out infinite alternate;
+    position:fixed;z-index:2;width:min(78vw,660px);aspect-ratio:1;right:-8%;top:13%;
+    background:radial-gradient(circle at 44% 46%,
+      rgba(244,186,164,.95) 0%,
+      rgba(246,196,176,.88) 22%,
+      rgba(247,201,184,.72) 40%,
+      rgba(250,216,203,.44) 58%,
+      rgba(252,227,218,.18) 76%,
+      rgba(252,227,218,.04) 90%,
+      rgba(252,227,218,0)   100%);
+    border-radius:50%;filter:blur(18px);opacity:1;
+    animation:breathe 4.25s ease-in-out infinite alternate,
+              wander 52s ease-in-out infinite;
+    will-change:transform;
   }
   .breath.two{position:fixed;z-index:2;width:min(130vw,1040px);aspect-ratio:1;left:0;bottom:-50%;top:auto;right:auto;
     background:none;border-radius:0;filter:none;opacity:1;
-    transform:translateX(-30%);animation:none;}
+    transform:translateX(-30%);
+    animation:driftBlue 5.75s ease-in-out infinite alternate;will-change:transform;}
   .breath.two img{width:100%;height:100%;display:block;max-width:none;}
-  @keyframes breathe{from{transform:scale(1);}to{transform:scale(1.09) translateY(-10px);}}
+
+  /* one long, slow breath: in and out over about 34 seconds */
+  @keyframes breathe{from{transform:scale(.94) translate(0,0);}
+                     to  {transform:scale(1.13) translate(-12px,-16px);}}
+  /* a very slow orbit, bounded so it can never leave the frame */
+  @keyframes wander{
+    0%,100%{margin:0 0 0 0;}
+    25%    {margin:22px 0 0 -30px;}
+    50%    {margin:8px 0 0 26px;}
+    75%    {margin:-24px 0 0 12px;}
+  }
+  /* the blue shape rises and falls on a long, gentle cycle */
+  @keyframes driftBlue{
+    from{transform:translateX(-30%) translateY(0) scale(.97);}
+    to  {transform:translateX(-27%) translateY(-34px) scale(1.07);}
+  }
   .hero-content{position:relative;z-index:1;}
   .hero h1{font-size:clamp(2.8rem, 8vw, 5.8rem);max-width:16ch;line-height:1.02;}
   .hero h1 em{font-family:var(--serif);font-style:italic;font-weight:400;color:var(--ink);letter-spacing:0;}
@@ -263,8 +288,12 @@
     font-size:.85rem;color:var(--on-dark-soft);display:flex;justify-content:space-between;gap:1rem;flex-wrap:wrap;}
 
   /* ---------- reveal ---------- */
-  .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease, transform .7s ease;}
-  .reveal.in{opacity:1;transform:none;}
+  [data-reveal]{opacity:0;transform:translateY(18px);
+    transition:opacity .65s cubic-bezier(.16,1,.3,1), transform .65s cubic-bezier(.16,1,.3,1);}
+  [data-reveal].is-visible{opacity:1;transform:none;}
+  @media(prefers-reduced-motion:reduce){
+    [data-reveal]{opacity:1;transform:none;transition:none;}
+  }
 
   a:focus-visible,.btn:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px;border-radius:6px;}
 
@@ -456,8 +485,8 @@
 </style>
 <script type="importmap">
 {"imports":{
-  "three":"https://unpkg.com/three@0.184.0/build/three.module.js",
-  "three/addons/":"https://unpkg.com/three@0.184.0/examples/jsm/"
+  "three":"https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/"
 }}
 </script>
 <script type="application/ld+json">
@@ -690,7 +719,7 @@
     <span class="eyebrow">O mně</span>
     <div class="grid-2" style="align-items:center;text-align:left;margin-top:1.4rem;">
       <div class="portrait" style="padding:0;">
-        <img src="brand-assets/pictures/image-04.jpg" alt="Petra Petrů" style="width:100%;height:100%;object-fit:cover;">
+        <img src="brand-assets/pictures/image-04.jpg" alt="Petra Petrů" loading="lazy" style="width:100%;height:100%;object-fit:cover;">
       </div>
       <div>
         <h2 class="h-sec" style="margin-top:0;">Petra Petrů</h2>
@@ -727,7 +756,7 @@
 
       <div class="stat-row">
         <div class="stat-one">
-          <div class="stat">98 %</div>
+          <div class="stat" data-count="98" data-suffix=" %">98 %</div>
           <div class="s-lbl">dětí se rodí se zdravýma nohama</div>
         </div>
         <div class="stat-one">
@@ -873,11 +902,53 @@
   const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
   onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-  // reveal on scroll
-  const io = new IntersectionObserver((entries) => {
-    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
-  }, {threshold:0.12});
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+  // ---- scroll reveals: individual elements, gently staggered ----
+  (() => {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    // single elements
+    const SOLO = '.eyebrow, .h-sec, .h-sub, .prose, .cms-slot, .acc, .portrait, .c-list, .pull-light, .schedule';
+    // groups whose members arrive one after another
+    const GROUP = ['.cards > .card', '.venues > .venue', '.gallery > .ph-img',
+                   '.hero-meta > .hm-item', '.stat-row > .stat-one', '.f-split > div'];
+
+    const scope = document.querySelectorAll('section:not(.hero), footer');
+    scope.forEach(sec => {
+      sec.querySelectorAll(SOLO).forEach(el => el.setAttribute('data-reveal',''));
+      sec.querySelectorAll('p.lead').forEach(el => el.setAttribute('data-reveal',''));
+    });
+    GROUP.forEach(sel => {
+      document.querySelectorAll(sel).forEach((el, i) => {
+        el.setAttribute('data-reveal','');
+        el.style.transitionDelay = (i * 90) + 'ms';
+      });
+    });
+
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (!entry.isIntersecting) return;
+        io.unobserve(entry.target);
+        if (entry.target.hasAttribute('data-count')) { countUp(entry.target); return; }
+        entry.target.classList.add('is-visible');
+      });
+    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('[data-reveal]').forEach(el => io.observe(el));
+    document.querySelectorAll('[data-count]').forEach(el => io.observe(el));
+
+    // a number worth watching arrive
+    function countUp(el){
+      const target = parseFloat(el.dataset.count);
+      const suffix = el.dataset.suffix || '';
+      const dur = 3200, t0 = performance.now();
+      (function tick(now){
+        const t = Math.min((now - t0) / dur, 1);
+        const e = 1 - Math.pow(1 - t, 2);            // gentle ease out, climb stays visible
+        el.textContent = Math.round(target * e) + suffix;
+        if (t < 1) requestAnimationFrame(tick);
+      })(t0);
+    }
+  })();
 
   // ---- Teenjóga expanding cards ----
   const cardContent = [
@@ -984,9 +1055,24 @@
 
   const rand = (a, b) => a + Math.random() * (b - a);
 
+  // jsDelivr first; esm.sh as a fallback if it is unreachable
+  async function loadThree(){
+    try {
+      const T = await import('three');
+      const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+      return [T, GLTFLoader];
+    } catch (e) {
+      console.info('primary CDN unavailable, trying fallback');
+      const base = 'https://esm.sh/three@0.184.0';
+      const T = await import(base);
+      const { GLTFLoader } = await import(base + '/examples/jsm/loaders/GLTFLoader.js');
+      return [T, GLTFLoader];
+    }
+  }
+
   async function init(){
-    THREE = await import('three');
-    const { GLTFLoader } = await import('three/addons/loaders/GLTFLoader.js');
+    let GLTFLoader;
+    [THREE, GLTFLoader] = await loadThree();
 
     canvas = document.createElement('canvas');
     canvas.id = 'seed-canvas';
