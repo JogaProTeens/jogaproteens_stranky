@@ -1,0 +1,33 @@
+{% extends "_base.html" %}
+{% block title %}Inspirace | Jóga pro teens{% endblock %}
+{% block description %}Články, tipy a myšlenky k józe pro dospívající.{% endblock %}
+{% block path %}/inspirace/{% endblock %}
+
+{% block content %}
+<section class="section archive">
+  <div class="wrap">
+    <a class="post-back" href="/#inspirace">← Zpět na hlavní stránku</a>
+    <span class="eyebrow">Inspirace</span>
+    <h1 class="h-sec">Všechny články</h1>
+    {% if posts %}
+    <div class="archive-grid">
+      {% for post in posts %}
+      <article class="post-card post-card--{{ post.orientation }}">
+        <a class="post-card-link" href="{{ post.url }}">
+          <img class="post-card-img" src="{{ post.url }}{{ post.cover }}" alt="{{ post.cover_alt }}"
+               loading="lazy" style="view-transition-name: cover-{{ post.slug }}">
+          <div class="post-card-text">
+            <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
+            <h3>{{ post.title }}</h3>
+            <p>{{ post.headline }}</p>
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="lead">Zatím tu nejsou žádné články.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

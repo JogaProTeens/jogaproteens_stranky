@@ -1,0 +1,48 @@
+{% extends "_base.html" %}
+{% block title %}{{ post.title }} | Jóga pro teens{% endblock %}
+{% block description %}{{ post.headline }}{% endblock %}
+{% block path %}{{ post.url }}{% endblock %}
+{% block meta %}
+<meta property="og:type" content="article">
+<meta property="og:url" content="{{ site_url }}{{ post.url }}">
+<meta property="og:locale" content="cs_CZ">
+<meta property="og:site_name" content="Jóga pro teens">
+<meta property="og:title" content="{{ post.title }}">
+<meta property="og:description" content="{{ post.headline }}">
+<meta property="og:image" content="{{ site_url }}{{ post.url }}{{ post.cover }}">
+<meta property="og:image:alt" content="{{ post.cover_alt }}">
+<meta property="article:published_time" content="{{ post.date.isoformat() }}">
+<meta name="twitter:card" content="summary_large_image">
+{% endblock %}
+
+{% block content %}
+<article class="post wrap">
+  <a class="post-back" href="/#inspirace">← Zpět na Inspirace</a>
+
+  <header class="post-header">
+    <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
+    <h1>{{ post.title }}</h1>
+    <p class="lead">{{ post.headline }}</p>
+  </header>
+
+  <figure class="post-cover post-cover--{{ post.orientation }}">
+    <img src="{{ post.cover }}" alt="{{ post.cover_alt }}" style="view-transition-name: cover-{{ post.slug }}">
+  </figure>
+
+  <div class="post-body">
+    {{ post.body_html | safe }}
+  </div>
+
+  {% if post.video_embed %}
+  <div class="post-video">
+    <iframe src="{{ post.video_embed }}" title="Video k článku {{ post.title }}" loading="lazy"
+            allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe>
+  </div>
+  {% endif %}
+
+  <nav class="post-pager" aria-label="Další články">
+    {% if newer %}<a class="pager-newer" href="{{ newer.url }}"><span>Novější</span>{{ newer.title }}</a>{% endif %}
+    {% if older %}<a class="pager-older" href="{{ older.url }}"><span>Starší</span>{{ older.title }}</a>{% endif %}
+  </nav>
+</article>
+{% endblock %}
