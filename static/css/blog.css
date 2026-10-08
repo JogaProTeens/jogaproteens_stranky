@@ -1,0 +1,159 @@
+/* ===== Blog: Inspirace carousel, post pages, archive =====
+   Uses the tokens and fonts defined in site.css. */
+
+/* The cover photo grows from the card into the post page (where supported). */
+@view-transition { navigation: auto; }
+@media (prefers-reduced-motion: reduce) {
+  @view-transition { navigation: none; }
+}
+
+/* ---------- card ---------- */
+.carousel, .archive-grid{ --img-h: 380px; }   /* every card shares this image height */
+.post-card{
+  flex: none;
+  scroll-snap-align: start;
+  width: calc(var(--img-h) * 2 / 3);          /* portrait 2:3 */
+}
+.post-card--landscape{ width: calc(var(--img-h) * 3 / 2); }   /* landscape 3:2 */
+
+.post-card-link{ display:flex; flex-direction:column; height:100%; color:inherit; }
+.post-card-img{
+  width:100%; height:var(--img-h); object-fit:cover; object-position:center;
+  border-radius:var(--radius); background:var(--primary-tint);
+  transition: transform .5s var(--ease), box-shadow .5s var(--ease);
+}
+.post-card-text{ padding:1rem .2rem 0; }
+.post-card time{ font-size:.82rem; letter-spacing:.06em; color:var(--ink-soft); }
+.post-card h3{
+  font-size:1.45rem; margin-top:.35rem; color:var(--ink); letter-spacing:0;
+  display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden;
+}
+.post-card p{
+  margin-top:.45rem; font-size:.97rem; color:var(--ink-soft); line-height:1.5;
+  display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+}
+.post-card-link:hover .post-card-img,
+.post-card-link:focus-visible .post-card-img{
+  transform: translateY(-4px); box-shadow: 0 14px 30px -18px rgba(46,74,102,.45);
+}
+.post-card-link:focus-visible{ outline:3px solid var(--accent); outline-offset:6px; border-radius:var(--radius); }
+
+.post-card--more{
+  width: calc(var(--img-h) * 2 / 3); height: var(--img-h);
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+  border:1.5px dashed rgba(46,74,102,.3); border-radius:var(--radius);
+  font-family:var(--display); font-size:1.4rem; color:var(--ink);
+  transition: background .3s ease;
+}
+.post-card--more:hover{ background:var(--primary-tint); }
+
+/* ---------- carousel ---------- */
+.carousel{
+  position:relative; margin-top:2.6rem;
+  /* distance from the screen edge to the text column, as in .wrap */
+  --bleed: calc(max(0px, (100vw - var(--maxw)) / 2) + var(--pad));
+}
+.carousel-track{
+  display:flex; gap:1.6rem; align-items:flex-start;
+  overflow-x:auto; overscroll-behavior-x:contain;
+  scroll-snap-type:x mandatory; scroll-behavior:smooth;
+  /* run edge to edge of the screen, while the first card lines up with the text */
+  margin-inline: calc(-1 * var(--bleed));
+  padding: .5rem var(--bleed) 1.4rem;
+  scroll-padding-inline: var(--bleed);
+  scrollbar-width:none;
+}
+.carousel-track::-webkit-scrollbar{ display:none; }
+.carousel-track:focus-visible{ outline:3px solid var(--accent); outline-offset:-3px; }
+
+/* Cards that are only partly in view sink out of focus: blurred and faded.
+   carousel.js sets --focus from 0 (hidden) to 1 (fully visible). */
+.carousel .post-card{
+  --focus: 1;
+  filter: blur(calc((1 - var(--focus)) * 7px));
+  opacity: calc(.3 + .7 * var(--focus));
+  transition: filter .35s ease, opacity .35s ease;
+}
+
+/* Arrows sit on both sides, level with the middle of the photos. */
+.carousel-btn{
+  position:absolute; z-index:4;
+  top: calc(.5rem + var(--img-h) / 2); transform: translateY(-50%);
+  width:52px; height:52px; border-radius:50%;
+  border:1.5px solid var(--accent); color:var(--accent);
+  background: rgba(251,248,244,.72);
+  -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px);
+  font-size:1.2rem; cursor:pointer;
+  transition: background .25s ease, color .25s ease, opacity .3s ease;
+}
+.carousel-btn[data-dir="-1"]{ left: -26px; }
+.carousel-btn[data-dir="1"]{ right: -26px; }
+.carousel-btn:hover{ background:var(--accent); color:var(--on-dark); }
+.carousel-btn:focus-visible{ outline:3px solid var(--accent); outline-offset:3px; }
+.carousel-btn[disabled]{ opacity:0; pointer-events:none; }
+.carousel.no-overflow .carousel-btn{ display:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .carousel .post-card{ transition:none; }
+}
+
+/* ---------- post page ---------- */
+.blog-page main{ position:relative; z-index:3; }
+.post{ padding-top:clamp(2rem,6vw,4.5rem); padding-bottom:clamp(4rem,9vw,7rem); }
+.post-back{ display:inline-block; font-size:.95rem; font-weight:500; color:var(--ink-soft); margin-bottom:2rem; }
+.post-back:hover{ color:var(--ink); }
+.post-header, .post-body, .post-video, .post-pager{ max-width:720px; margin-inline:auto; }
+.post-header time{ font-size:.85rem; letter-spacing:.06em; color:var(--ink-soft); }
+.post-header h1{ font-size:clamp(2.4rem,6vw,4rem); margin-top:.5rem; }
+.post-header .lead{ max-width:none; }
+
+.post-cover{ margin:2.4rem auto 2.8rem; }
+.post-cover img{ width:100%; border-radius:var(--radius); object-fit:cover; }
+.post-cover--landscape{ max-width:1000px; }
+.post-cover--landscape img{ aspect-ratio:3/2; }
+.post-cover--portrait{ max-width:480px; }
+.post-cover--portrait img{ aspect-ratio:2/3; }
+
+.post-body{ font-size:1.08rem; line-height:1.75; color:var(--ink); }
+.post-body > * + *{ margin-top:1.1em; }
+.post-body h2{ font-size:clamp(1.7rem,3.4vw,2.2rem); margin-top:2.2em; }
+.post-body h3{ font-size:clamp(1.35rem,2.6vw,1.6rem); margin-top:1.8em; }
+.post-body a{ color:var(--accent); text-decoration:underline; text-decoration-color:var(--primary); text-underline-offset:3px; text-decoration-thickness:2px; }
+.post-body a:hover{ text-decoration-color:var(--accent); }
+.post-body ul, .post-body ol{ padding-left:1.3em; }
+.post-body li + li{ margin-top:.35em; }
+.post-body blockquote{
+  font-family:var(--serif); font-style:italic; font-size:1.3rem; line-height:1.5;
+  border-left:3px solid var(--primary); padding-left:1.2rem; color:var(--ink);
+}
+.post-body img{ border-radius:var(--radius); margin-inline:auto; }
+.post-body figcaption{ font-size:.88rem; color:var(--ink-soft); text-align:center; margin-top:.5rem; }
+.post-body hr{ border:0; border-top:1px solid rgba(46,74,102,.15); margin-block:2.4em; }
+
+.post-video{ margin-top:2.4rem; aspect-ratio:16/9; }
+.post-video iframe{ width:100%; height:100%; border:0; border-radius:var(--radius); }
+
+.post-pager{
+  display:grid; grid-template-columns:1fr 1fr; gap:1.2rem;
+  margin-top:4rem; padding-top:2rem; border-top:1px solid rgba(46,74,102,.14);
+}
+.post-pager a{ font-family:var(--display); font-size:1.25rem; line-height:1.2; color:var(--ink); }
+.post-pager a span{ display:block; font-family:var(--sans); font-size:.78rem; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:.4rem; }
+.post-pager .pager-older{ grid-column:2; text-align:right; }
+
+/* ---------- archive ---------- */
+.archive-grid{ display:flex; flex-wrap:wrap; gap:2.4rem 1.6rem; margin-top:2.6rem; }
+.archive .post-back{ display:block; }
+
+/* ---------- phones ---------- */
+@media (max-width:600px){
+  /* On a narrow screen the width decides, so a landscape card never overflows. */
+  .post-card{ width:62vw; --img-h: calc(62vw * 3 / 2); }
+  .carousel-track{ padding-bottom:.6rem; }
+  .post-card--landscape{ width:84vw; --img-h: calc(84vw * 2 / 3); }
+  .post-card--more{ width:62vw; height:calc(62vw * 3 / 2); }
+  .carousel-track{ gap:1rem; }
+  .carousel-btn{ display:none; }   /* swiping is the natural gesture here */
+  .post-pager{ grid-template-columns:1fr; }
+  .post-pager .pager-older{ grid-column:1; text-align:left; }
+}

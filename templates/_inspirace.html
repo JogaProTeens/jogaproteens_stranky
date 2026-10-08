@@ -1,0 +1,33 @@
+{# Inspirace on the homepage: a horizontal row of post cards, newest first. #}
+{% if posts %}
+    <div class="carousel" data-carousel>
+      <div class="carousel-track" tabindex="0" role="region" aria-label="Články, posouvejte do stran">
+        {% for post in posts %}
+        <article class="post-card post-card--{{ post.orientation }}">
+          <a class="post-card-link" href="{{ post.url }}">
+            <img class="post-card-img" src="{{ post.url }}{{ post.cover }}" alt="{{ post.cover_alt }}"
+                 loading="lazy" style="view-transition-name: cover-{{ post.slug }}">
+            <div class="post-card-text">
+              <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
+              <h3>{{ post.title }}</h3>
+              <p>{{ post.headline }}</p>
+            </div>
+          </a>
+        </article>
+        {% endfor %}
+        {% if has_more %}
+        <a class="post-card post-card--more" href="/inspirace/">Všechny články <span aria-hidden="true">→</span></a>
+        {% endif %}
+      </div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" type="button" data-dir="-1" aria-label="Předchozí články">←</button>
+        <button class="carousel-btn" type="button" data-dir="1" aria-label="Další články">→</button>
+      </div>
+    </div>
+    <script src="/js/carousel.js" defer></script>
+{% else %}
+    <div class="cms-slot">
+      <span class="cms-label">Připravujeme</span>
+      <p>Obsah této sekce bude spravovaný přes redakční systém, aby šel doplňovat průběžně bez zásahu do kódu stránky.</p>
+    </div>
+{% endif %}

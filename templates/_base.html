@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}{% endblock %}</title>
+<meta name="description" content="{% block description %}{% endblock %}">
+<link rel="canonical" href="{{ site_url }}{% block path %}{% endblock %}">
+{% block meta %}{% endblock %}
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="512x512" href="/brand-assets/favicon/favicon-512.png">
+<link rel="apple-touch-icon" href="/brand-assets/favicon/favicon-512.png">
+<link rel="preload" href="/fonts/maragsa.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/css/site.css">
+<link rel="stylesheet" href="/css/blog.css">
+</head>
+<body class="blog-page">
+<div class="breath" aria-hidden="true"></div>
+
+<header class="nav" id="top">
+  <div class="wrap nav-inner">
+    <a href="/" class="brand">
+      <img src="/brand-assets/logo/icon-full-color.svg" alt="" class="brand-icon" aria-hidden="true" width="32" height="32">
+      jóga pro <span>teens</span>
+    </a>
+    <button class="nav-toggle" aria-label="Otevřít menu" aria-expanded="false" id="navToggle"><span></span><span></span><span></span></button>
+    <nav class="nav-links" id="navLinks">
+      <a href="/#teenjoga">Teenjóga</a>
+      <a href="/#pro-skoly">Pro školy</a>
+      <a href="/#lekce">Lekce</a>
+      <a href="/#inspirace">Inspirace</a>
+      <a href="/#o-mne">O mně</a>
+      <a href="/#kontakt">Kontakt</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+{% block content %}{% endblock %}
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-inner">
+      <div class="foot-brand">jóga pro <span>teens</span></div>
+      <nav class="foot-links">
+        <a href="/#teenjoga">Teenjóga</a>
+        <a href="/#pro-skoly">Pro školy</a>
+        <a href="/#lekce">Lekce</a>
+        <a href="/#inspirace">Inspirace</a>
+        <a href="/#o-mne">O mně</a>
+        <a href="/#kontakt">Kontakt</a>
+      </nav>
+    </div>
+    <div class="foot-bottom">
+      <span>jogaproteens.cz</span>
+      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+  const toggle = document.getElementById('navToggle');
+  const links = document.getElementById('navLinks');
+  toggle.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    toggle.setAttribute('aria-expanded', open);
+  });
+  const nav = document.querySelector('header.nav');
+  const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
+  onScroll(); window.addEventListener('scroll', onScroll, {passive: true});
+</script>
+</body>
+</html>
