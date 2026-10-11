@@ -16,21 +16,28 @@
 {% endblock %}
 
 {% block content %}
-<article class="post wrap">
-  <a class="post-back" href="/#inspirace">← Zpět na Inspirace</a>
-
-  <header class="post-header">
-    <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
-    <h1>{{ post.title }}</h1>
-    <p class="lead">{{ post.headline }}</p>
-  </header>
-
+{% set cover %}
   <figure class="post-cover post-cover--{{ post.orientation }}">
     <img src="{{ post.cover }}" alt="{{ post.cover_alt }}" style="view-transition-name: cover-{{ post.slug }}">
   </figure>
+{% endset %}
+<article class="post post--{{ post.orientation }} wrap">
+  <a class="post-back" href="/#inspirace">← Zpět na Inspirace</a>
 
-  <div class="post-body">
-    {{ post.body_html | safe }}
+  {# A portrait photo sits on the left and the text flows around it;
+     a landscape photo spans the full width between the title and the text. #}
+  <div class="post-flow">
+    {% if post.orientation == "portrait" %}{{ cover }}{% endif %}
+    <header class="post-header">
+      <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
+      <h1>{{ post.title }}</h1>
+      <p class="lead">{{ post.headline }}</p>
+    </header>
+    {% if post.orientation == "landscape" %}{{ cover }}{% endif %}
+
+    <div class="post-body">
+      {{ post.body_html | safe }}
+    </div>
   </div>
 
   {% if post.video_embed %}

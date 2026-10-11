@@ -16,9 +16,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;1,9..144,400&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="/css/site.css">
 <link rel="stylesheet" href="/css/blog.css">
+<script type="importmap">
+{"imports":{
+  "three":"https://cdn.jsdelivr.net/npm/three@0.184.0/build/three.module.js",
+  "three/addons/":"https://cdn.jsdelivr.net/npm/three@0.184.0/examples/jsm/"
+}}
+</script>
 </head>
 <body class="blog-page">
 <div class="breath" aria-hidden="true"></div>
+<div class="breath two" aria-hidden="true"><img src="/brand-assets/patterns/blue-blob.svg" alt=""></div>
 
 <header class="nav" id="top">
   <div class="wrap nav-inner">
@@ -74,5 +81,6 @@
   const onScroll = () => nav.classList.toggle('scrolled', window.scrollY > 10);
   onScroll(); window.addEventListener('scroll', onScroll, {passive: true});
 </script>
+<script type="module" src="/js/seed.js"></script>
 </body>
 </html>
