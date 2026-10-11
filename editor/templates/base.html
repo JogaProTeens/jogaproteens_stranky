@@ -14,7 +14,12 @@
 <body>
 <header class="topbar">
   <a class="brand" href="/">jóga pro <span>teens</span> · editor</a>
-  <span class="mode">{% if settings.store == "github" %}Ukládá se na web{% else %}Zkušební režim: ukládá se jen do počítače{% endif %}</span>
+  <div class="topbar-right">
+    <span class="mode">{% if settings.store == "github" %}Ukládá se na web{% else %}Zkušební režim: ukládá se jen do počítače{% endif %}</span>
+    {% if settings.login_required and not hide_logout %}
+    <form method="post" action="/odhlasit"><button class="link-button" type="submit">Odhlásit</button></form>
+    {% endif %}
+  </div>
 </header>
 <main class="page">
 {% block content %}{% endblock %}

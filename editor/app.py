@@ -3,12 +3,16 @@
 Run it from the project folder:
     uvicorn editor.app:app --reload --port 8001
 then open http://localhost:8001
+
+Online (Render) it starts with:
+    uvicorn editor.app:app --host 0.0.0.0 --port $PORT --workers 1 --proxy-headers --forwarded-allow-ips "*"
 """
 from __future__ import annotations
 
 import datetime as dt
 import mimetypes
 import re
+import secrets
 from contextlib import asynccontextmanager
 from pathlib import Path
 from urllib.parse import quote, urlparse
@@ -18,9 +22,10 @@ from fastapi.responses import JSONResponse, PlainTextResponse, RedirectResponse,
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 from starlette.datastructures import UploadFile
+from starlette.middleware.sessions import SessionMiddleware
 
 import build
-from editor import images
+from editor import auth, images
 from editor.config import REPO_ROOT, load_settings
 from editor.content import (COVER_FILES, FILE_RE, FOLDER_RE, check_with_build, compose,
                             parse, resolve_images, sanitise, show_images_in_editor,
@@ -57,8 +62,36 @@ app.mount("/fonts", StaticFiles(directory=REPO_ROOT / "static" / "fonts"), name=
 
 templates = Jinja2Templates(directory=HERE / "templates")
 templates.env.filters["cs_date"] = build.czech_date
-templates.env.globals.update(site_url=build.SITE_URL, settings=settings,
-                             headline_max=build.HEADLINE_MAX, title_max=TITLE_MAX)
+templates.env.globals.update(site_url=build.SITE_URL, headline_max=build.HEADLINE_MAX,
+                             title_max=TITLE_MAX)
+login_guard = auth.LoginGuard()
+PUBLIC_PATHS = ("/prihlaseni", "/static/", "/fonts/", "/healthz")
+
+
+def render(request: Request, name: str, context: dict | None = None, status_code: int = 200):
+    context = {"settings": settings, **(context or {})}
+    return templates.TemplateResponse(request, name, context, status_code=status_code)
+
+
+def logged_in(request: Request) -> bool:
+    if not settings.login_required:
+        return True
+    return request.session.get("auth") == auth.session_tag(settings.password_hash)
+
+
+# Middleware runs from the last one added to the first: session, then
+# same-site check, then login check, then the page itself.
+
+@app.middleware("http")
+async def require_login(request: Request, call_next):
+    path = request.url.path
+    if logged_in(request) or path == "/healthz" or path.startswith(PUBLIC_PATHS):
+        return await call_next(request)
+    if request.method == "GET" and not path.startswith("/api/") and not path.startswith("/media/"):
+        return RedirectResponse(f"/prihlaseni?dalsi={quote(path)}", status_code=303)
+    return JSONResponse({"ok": False, "errors": [
+        "Přihlášení vypršelo. Otevřete editor v novém okně, přihlaste se a uložte znovu."]},
+        status_code=401)
 
 
 @app.middleware("http")
@@ -70,13 +103,76 @@ async def same_site_only(request: Request, call_next):
         if (origin and urlparse(origin).netloc != request.headers.get("host")) \
                 or fetch_site not in (None, "same-origin", "none"):
             return PlainTextResponse("Požadavek z cizí stránky byl odmítnut.", status_code=403)
-    return await call_next(request)
+    response = await call_next(request)
+    response.headers["X-Frame-Options"] = "DENY"
+    response.headers["X-Content-Type-Options"] = "nosniff"
+    response.headers["Referrer-Policy"] = "same-origin"
+    return response
+
+
+app.add_middleware(
+    SessionMiddleware,
+    secret_key=settings.session_secret or secrets.token_urlsafe(32),
+    session_cookie="editor_session",
+    max_age=auth.SESSION_DAYS * 24 * 3600,
+    same_site="lax",
+    https_only=settings.https,
+)
 
 
 @app.exception_handler(StoreError)
 async def store_error_page(request: Request, error: StoreError):
-    return templates.TemplateResponse(request, "error.html", {"message": str(error)},
-                                      status_code=502)
+    return render(request, "error.html", {"message": str(error)}, status_code=502)
+
+
+# ---------- login ----------
+
+def safe_next(target: str | None) -> str:
+    """Only allow returning to a page of this editor after logging in."""
+    if target and target.startswith("/") and not target.startswith("//") and "\\" not in target:
+        return target
+    return "/"
+
+
+@app.get("/healthz")
+async def health():
+    return PlainTextResponse("ok")
+
+
+@app.get("/prihlaseni")
+async def login_page(request: Request):
+    if logged_in(request):
+        return RedirectResponse(safe_next(request.query_params.get("dalsi")), status_code=303)
+    return render(request, "login.html", {"next": safe_next(request.query_params.get("dalsi"))})
+
+
+@app.post("/prihlaseni")
+async def login(request: Request):
+    form = await request.form()
+    target = safe_next(form.get("dalsi") if isinstance(form.get("dalsi"), str) else None)
+    if not settings.login_required:
+        return RedirectResponse(target, status_code=303)
+    ip = request.client.host if request.client else "?"
+    wait = login_guard.seconds_locked(ip)
+    if wait:
+        minutes = max(1, round(wait / 60))
+        return render(request, "login.html", {"next": target, "error":
+                      f"Příliš mnoho pokusů. Zkuste to znovu za {minutes} min."}, status_code=429)
+    password = form.get("password") if isinstance(form.get("password"), str) else ""
+    if not auth.password_ok(settings.password_hash, password):
+        login_guard.failed(ip)
+        return render(request, "login.html", {"next": target, "error": "Heslo nesedí."},
+                      status_code=401)
+    login_guard.succeeded(ip)
+    request.session.clear()
+    request.session["auth"] = auth.session_tag(settings.password_hash)
+    return RedirectResponse(target, status_code=303)
+
+
+@app.post("/odhlasit")
+async def logout(request: Request):
+    request.session.clear()
+    return RedirectResponse("/prihlaseni", status_code=303)
 
 
 async def load_post(folder: str):
@@ -106,7 +202,7 @@ async def post_list(request: Request):
     q = request.query_params
     saved = q.get("ulozeno", "")
     commit = q.get("commit", "")
-    return templates.TemplateResponse(request, "list.html", {
+    return render(request, "list.html", {
         "posts": posts,
         "saved": saved if FOLDER_RE.match(saved) else "",
         "deleted": q.get("smazano") == "1",
@@ -117,7 +213,7 @@ async def post_list(request: Request):
 
 @app.get("/novy")
 async def new_post(request: Request):
-    return templates.TemplateResponse(request, "edit.html", {
+    return render(request, "edit.html", {
         "post": None, "folder": "", "meta": {"date": dt.date.today(), "orientation": "portrait"},
         "body": "", "cover_url": "",
     })
@@ -127,7 +223,7 @@ async def new_post(request: Request):
 async def edit_post(request: Request, folder: str):
     post, _ = await load_post(folder)
     body = show_images_in_editor(build.clean_body(post.body), folder)
-    return templates.TemplateResponse(request, "edit.html", {
+    return render(request, "edit.html", {
         "post": post, "folder": folder, "meta": post.meta, "body": body,
         "cover_url": f"/media/{folder}/{quote(str(post.meta.get('cover', '')))}",
     })

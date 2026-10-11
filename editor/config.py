@@ -5,8 +5,12 @@
     GITHUB_TOKEN    fine-grained token, only needed for "github"
     GITHUB_REPO     owner/name of the repository
     GITHUB_BRANCH   branch the site is built from
+    EDITOR_PASSWORD_HASH, SESSION_SECRET
+                    the login; required for "github". Create both with
+                    python -m editor.auth
 
-The .env file is listed in .gitignore, so the token never reaches GitHub.
+The .env file is listed in .gitignore, so secrets never reach GitHub.
+On Render the same names are set as environment variables instead.
 """
 from __future__ import annotations
 
@@ -23,6 +27,13 @@ class Settings:
     github_token: str | None
     github_repo: str
     github_branch: str
+    password_hash: str | None = None     # None: no login (local practice mode only)
+    session_secret: str | None = None
+    https: bool = False                  # cookies only over HTTPS (on Render)
+
+    @property
+    def login_required(self) -> bool:
+        return self.password_hash is not None
 
 
 def read_env_file(path: Path) -> dict[str, str]:
@@ -47,9 +58,20 @@ def load_settings(env_file: Path = REPO_ROOT / ".env") -> Settings:
     token = values.get("GITHUB_TOKEN") or None
     if store == "github" and not token:
         raise RuntimeError("EDITOR_STORE=github needs GITHUB_TOKEN in .env")
+    password_hash = values.get("EDITOR_PASSWORD_HASH") or None
+    session_secret = values.get("SESSION_SECRET") or None
+    if store == "github" and not (password_hash and session_secret):
+        # Saving to the live site always needs a login, on Render and on your Mac
+        raise RuntimeError("EDITOR_STORE=github needs EDITOR_PASSWORD_HASH and SESSION_SECRET. "
+                           "Create them with: python -m editor.auth")
+    if password_hash and not session_secret:
+        raise RuntimeError("EDITOR_PASSWORD_HASH needs SESSION_SECRET as well")
     return Settings(
         store=store,
         github_token=token,
         github_repo=values.get("GITHUB_REPO", "JogaProTeens/jogaproteens_stranky"),
         github_branch=values.get("GITHUB_BRANCH", "main"),
+        password_hash=password_hash,
+        session_secret=session_secret,
+        https="RENDER" in values,          # Render sets RENDER on its servers
     )

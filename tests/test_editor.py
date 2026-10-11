@@ -13,10 +13,12 @@ import httpx
 import pytest
 from PIL import Image
 
-os.environ["EDITOR_STORE"] = "local"          # never touch GitHub from tests
+# Tests never touch GitHub and ignore whatever is in your .env
+os.environ.update(EDITOR_STORE="local", EDITOR_PASSWORD_HASH="", SESSION_SECRET="")
 
 from editor import app as editor_app           # noqa: E402
-from editor import content, images             # noqa: E402
+from editor import auth, content, images       # noqa: E402
+from editor.config import Settings             # noqa: E402
 from editor.store import GitHubStore, LocalStore, StoreError, safe_path  # noqa: E402
 
 
@@ -169,6 +171,94 @@ def test_posts_from_another_site_are_refused(client):
     http, _ = client
     r = http.post("/ulozit", data=form(), headers={"Origin": "https://evil.example"})
     assert r.status_code == 403
+
+
+# ---------- login ----------
+
+PASSWORD = "spravne-heslo-123"
+
+
+@pytest.fixture
+def locked_client(client, monkeypatch):
+    """The app as on Render: every page needs the password."""
+    http, posts = client
+    monkeypatch.setattr(editor_app, "settings", Settings(
+        store="local", github_token=None, github_repo="o/r", github_branch="main",
+        password_hash=auth.hash_password(PASSWORD), session_secret="x" * 32))
+    monkeypatch.setattr(editor_app, "login_guard", auth.LoginGuard())
+    return http, posts
+
+
+def test_pages_need_login(locked_client):
+    http, _ = locked_client
+    r = http.get("/upravit/2026-01-01-a", follow_redirects=False)
+    assert r.status_code == 303 and r.headers["location"] == "/prihlaseni?dalsi=/upravit/2026-01-01-a"
+    assert http.post("/ulozit", data=form()).status_code == 401
+    assert http.get("/media/2026-01-01-a/cover.webp").status_code == 401
+    assert http.get("/healthz").text == "ok"
+    assert http.get("/static/editor.css").status_code == 200
+
+
+def test_login_and_logout(locked_client):
+    http, _ = locked_client
+    r = http.post("/prihlaseni", data={"password": "spatne", "dalsi": "/novy"})
+    assert r.status_code == 401 and "Heslo nesedí." in r.text
+    r = http.post("/prihlaseni", data={"password": PASSWORD, "dalsi": "/novy"}, follow_redirects=False)
+    assert r.status_code == 303 and r.headers["location"] == "/novy"
+    assert http.get("/").status_code == 200
+    assert "Odhlásit" in http.get("/").text
+    http.post("/odhlasit")
+    assert http.get("/", follow_redirects=False).status_code == 303
+
+
+def test_login_does_not_redirect_to_other_sites(locked_client):
+    http, _ = locked_client
+    for target in ("https://evil.example", "//evil.example", "/\\evil.example"):
+        r = http.post("/prihlaseni", data={"password": PASSWORD, "dalsi": target}, follow_redirects=False)
+        assert r.headers["location"] == "/"
+
+
+def test_new_password_logs_everyone_out(locked_client, monkeypatch):
+    http, _ = locked_client
+    http.post("/prihlaseni", data={"password": PASSWORD})
+    assert http.get("/", follow_redirects=False).status_code == 200
+    new = editor_app.settings.__class__(**{**editor_app.settings.__dict__,
+                                          "password_hash": auth.hash_password("nove-heslo-456")})
+    monkeypatch.setattr(editor_app, "settings", new)
+    assert http.get("/", follow_redirects=False).status_code == 303
+
+
+def test_lockout_after_five_wrong_passwords(locked_client):
+    http, _ = locked_client
+    for _ in range(5):
+        http.post("/prihlaseni", data={"password": "spatne"})
+    r = http.post("/prihlaseni", data={"password": PASSWORD})
+    assert r.status_code == 429 and "Příliš mnoho pokusů" in r.text
+
+
+def test_guard_unlocks_after_the_wait_and_counts_all_devices():
+    now = [1000.0]
+    guard = auth.LoginGuard(max_failures=5, lock_seconds=900, global_max=20, clock=lambda: now[0])
+    for _ in range(5):
+        guard.failed("1.1.1.1")
+    assert guard.seconds_locked("1.1.1.1") == 900
+    assert guard.seconds_locked("2.2.2.2") == 0
+    now[0] += 901
+    assert guard.seconds_locked("1.1.1.1") == 0
+    for i in range(20):                      # someone rotating IP addresses
+        guard.failed(f"10.0.0.{i}")
+    assert guard.seconds_locked("3.3.3.3") > 0
+
+
+def test_github_mode_refuses_to_start_without_login(tmp_path, monkeypatch):
+    from editor.config import load_settings
+    env = tmp_path / ".env"
+    env.write_text("EDITOR_STORE=github\nGITHUB_TOKEN=x\n")
+    monkeypatch.delenv("EDITOR_PASSWORD_HASH")
+    monkeypatch.delenv("SESSION_SECRET")
+    monkeypatch.delenv("EDITOR_STORE")
+    with pytest.raises(RuntimeError, match="editor.auth"):
+        load_settings(env)
 
 
 # ---------- GitHub, against a fake GitHub ----------
