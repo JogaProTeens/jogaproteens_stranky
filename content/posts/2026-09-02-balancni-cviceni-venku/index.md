@@ -7,5 +7,6 @@ cover: cover.jpg
 cover_alt: Dívky při jógové lekci
 orientation: landscape
 video: https://www.youtube.com/watch?v=dQw4w9WgXcQ
+draft: true
 ---
 <p>Ukázkový článek s videem. Pod textem se zobrazí vložené video z YouTube.</p>
