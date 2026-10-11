@@ -5,7 +5,7 @@
         {% for post in posts %}
         <article class="post-card post-card--{{ post.orientation }}">
           <a class="post-card-link" href="{{ post.url }}">
-            <img class="post-card-img" src="{{ post.url }}{{ post.cover }}" alt="{{ post.cover_alt }}"
+            <img class="post-card-img" src="{{ post.url }}{{ post.card_image }}" alt="{{ post.cover_alt }}"
                  loading="lazy" style="view-transition-name: cover-{{ post.slug }}">
             <div class="post-card-text">
               <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>

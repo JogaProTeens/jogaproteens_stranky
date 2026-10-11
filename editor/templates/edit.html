@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}{% if post %}Upravit článek{% else %}Nový článek{% endif %}{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/vendor/quill.snow.css">{% endblock %}
+{% block content %}
+{% set published = post and not meta.get("draft") %}
+<a class="back" href="/">← Všechny články</a>
+<h1>{% if post %}Upravit článek{% else %}Nový článek{% endif %}</h1>
+
+<form id="post-form" class="post-form" novalidate>
+  <input type="hidden" name="folder" value="{{ folder }}">
+
+  <div class="field">
+    <label for="title">Název</label>
+    <input id="title" name="title" type="text" maxlength="{{ title_max }}" required
+           value="{{ meta.get('title', '') }}" autocomplete="off">
+  </div>
+
+  <div class="field">
+    <label for="headline">Úvodní text <span class="hint">krátké shrnutí, ukáže se na kartičce</span></label>
+    <textarea id="headline" name="headline" rows="3" maxlength="{{ headline_max }}" required>{{ meta.get('headline', '') }}</textarea>
+    <span class="counter" data-counter-for="headline" aria-live="polite"></span>
+  </div>
+
+  <div class="field field-date">
+    <label for="date">Datum</label>
+    <input id="date" name="date" type="date" required value="{{ meta.get('date').isoformat() if meta.get('date') else '' }}">
+  </div>
+
+  <fieldset class="field cover">
+    <legend>Titulní fotka</legend>
+    <div class="cover-grid">
+      <div class="cover-preview cover-preview--{{ meta.get('orientation', 'portrait') }}" id="cover-preview">
+        {% if cover_url %}<img src="{{ cover_url }}" alt="">{% else %}<span>Zatím bez fotky</span>{% endif %}
+      </div>
+      <div class="cover-controls">
+        <label class="btn" for="cover">{% if post %}Vyměnit fotku{% else %}Vybrat fotku{% endif %}</label>
+        <input id="cover" name="cover" type="file" accept="image/*,.heic,.heif" class="visually-hidden">
+        <p class="hint" id="cover-name"></p>
+
+        <div class="shape" role="radiogroup" aria-label="Tvar">
+          <label><input type="radio" name="orientation" value="portrait" {% if meta.get('orientation', 'portrait') == 'portrait' %}checked{% endif %}> Na výšku</label>
+          <label><input type="radio" name="orientation" value="landscape" {% if meta.get('orientation') == 'landscape' %}checked{% endif %}> Na šířku</label>
+        </div>
+        {% if post %}<p class="hint">Tvar jde změnit jen spolu s novou fotkou.</p>{% endif %}
+
+        <label for="cover_alt">Popis fotky <span class="hint">pro nevidomé a vyhledávače, třeba „Dívky cvičí pozdrav slunci na louce“</span></label>
+        <input id="cover_alt" name="cover_alt" type="text" maxlength="200" required value="{{ meta.get('cover_alt', '') }}">
+        <p class="hint">Fotky dětí jen se souhlasem rodičů.</p>
+      </div>
+    </div>
+  </fieldset>
+
+  <div class="field">
+    <label id="body-label">Text článku</label>
+    <div class="editor-wrap">
+      <div id="body-editor" aria-labelledby="body-label">{{ body | safe }}</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="video">Video <span class="hint">nepovinné, odkaz na YouTube nebo Vimeo</span></label>
+    <input id="video" name="video" type="url" placeholder="https://www.youtube.com/watch?v=…" value="{{ meta.get('video', '') }}">
+  </div>
+
+  <div class="errors" id="errors" role="alert" hidden></div>
+
+  <div class="actions">
+    <button class="btn" type="submit" name="action" value="draft">
+      {% if published %}Stáhnout z webu (koncept){% else %}Uložit koncept{% endif %}
+    </button>
+    <button class="btn btn-primary" type="submit" name="action" value="publish">
+      {% if published %}Uložit změny na web{% else %}Publikovat{% endif %}
+    </button>
+  </div>
+</form>
+{% endblock %}
+{% block scripts %}
+<script src="/static/vendor/quill.js"></script>
+<script src="/static/editor.js" defer></script>
+{% endblock %}

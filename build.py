@@ -43,6 +43,8 @@ ALLOWED_ATTRIBUTES = {"a": {"href", "title"},
 
 SLUG_RE = re.compile(r"^[a-z0-9]+(-[a-z0-9]+)*$")
 REQUIRED = ("title", "slug", "date", "headline", "cover", "cover_alt", "orientation")
+CARD_IMAGE = "cover-card.webp"   # smaller cover for the carousel and archive
+SHARE_IMAGE = "og.jpg"           # 1200 x 630 picture for link previews
 
 
 class BuildError(Exception):
@@ -66,6 +68,16 @@ class Post:
     @property
     def url(self) -> str:
         return f"/inspirace/{self.slug}/"
+
+    # The editor saves smaller copies next to the cover. Posts written by
+    # hand may not have them, so fall back to the cover itself.
+    @property
+    def card_image(self) -> str:
+        return CARD_IMAGE if (self.folder / CARD_IMAGE).is_file() else self.cover
+
+    @property
+    def share_image(self) -> str:
+        return SHARE_IMAGE if (self.folder / SHARE_IMAGE).is_file() else self.cover
 
 
 # ---------- reading and validating posts ----------
@@ -114,7 +126,9 @@ def clean_body(raw: str) -> str:
 
 def load_post(folder: Path) -> Post:
     path = folder / "index.md"
-    source = path.relative_to(ROOT)          # short path for error messages
+    # Short path for error messages. The editor checks posts in a temporary
+    # folder outside the project, so fall back to the plain folder name.
+    source = path.relative_to(ROOT) if path.is_relative_to(ROOT) else Path(folder.name, "index.md")
     data, body = split_front_matter(path.read_text(encoding="utf-8"), source)
 
     missing = [key for key in REQUIRED if not data.get(key)]
