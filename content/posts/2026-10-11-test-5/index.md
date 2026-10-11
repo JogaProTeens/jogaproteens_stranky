@@ -6,6 +6,5 @@ headline: A
 cover: cover.webp
 cover_alt: A
 orientation: portrait
-draft: true
 ---
 <p>A</p>
