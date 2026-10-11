@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% set hide_logout = true %}
+{% block title %}Přihlášení{% endblock %}
+{% block content %}
+<div class="login">
+  <h1>Přihlášení</h1>
+  <p class="muted">Editor článků pro jogaproteens.cz</p>
+  {% if error %}<div class="errors" role="alert"><p>{{ error }}</p></div>{% endif %}
+  <form method="post" action="/prihlaseni" class="login-form">
+    <input type="hidden" name="dalsi" value="{{ next }}">
+    <label for="password">Heslo</label>
+    <input id="password" name="password" type="password" autocomplete="current-password" required autofocus>
+    <button class="btn btn-primary" type="submit">Přihlásit se</button>
+  </form>
+  <p class="hint">Na tomto zařízení zůstanete přihlášená 30 dní.</p>
+</div>
+{% endblock %}
