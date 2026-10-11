@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block title %}Články{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Inspirace</h1>
+  <a class="btn btn-primary" href="/novy">+ Nový článek</a>
+</div>
+
+{% if saved or deleted %}
+<div class="notice" role="status">
+  {% if deleted %}
+    <p>Článek je smazaný.</p>
+  {% elif draft %}
+    <p>Uloženo jako koncept. Na webu se zatím neukáže.</p>
+  {% else %}
+    <p>Uloženo a publikováno.</p>
+  {% endif %}
+  {% if commit %}
+  <p class="deploy" data-commit="{{ commit }}"
+     data-url="{% if saved and not draft %}{{ site_url }}/inspirace/{{ saved[11:] }}/{% endif %}">
+    Web se aktualizuje, obvykle do 2 minut…
+  </p>
+  {% elif settings.store == "local" %}
+  <p class="muted">Zkušební režim: náhled uvidíte po spuštění <code>python build.py --drafts</code>.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+{% if posts %}
+<ul class="post-list">
+  {% for post in posts %}
+  <li class="post-row">
+    <div class="post-row-text">
+      <time datetime="{{ post.date.isoformat() }}">{{ post.date | cs_date }}</time>
+      <a class="post-row-title" href="/upravit/{{ post.folder }}">{{ post.title }}</a>
+      {% if post.draft %}<span class="badge badge-draft">Koncept</span>{% else %}<span class="badge">Publikováno</span>{% endif %}
+    </div>
+    <div class="post-row-actions">
+      <a class="btn" href="/upravit/{{ post.folder }}">Upravit</a>
+      {% if not post.draft and settings.store == "github" %}
+      <a class="btn btn-quiet" href="{{ site_url }}/inspirace/{{ post.slug }}/" target="_blank" rel="noopener">Zobrazit</a>
+      {% endif %}
+      <form method="post" action="/smazat/{{ post.folder }}" data-confirm="Opravdu smazat článek „{{ post.title }}“? Půjde obnovit jen z historie na GitHubu.">
+        <button class="btn btn-danger" type="submit">Smazat</button>
+      </form>
+    </div>
+  </li>
+  {% endfor %}
+</ul>
+{% else %}
+<p class="empty">Zatím tu nejsou žádné články. Začněte tlačítkem Nový článek.</p>
+{% endif %}
+{% endblock %}
+{% block scripts %}<script src="/static/editor.js" defer></script>{% endblock %}

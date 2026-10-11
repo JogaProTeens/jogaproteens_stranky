@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block title %}Chyba{% endblock %}
+{% block content %}
+<div class="notice notice-error" role="alert">
+  <p><strong>Něco se nepovedlo.</strong></p>
+  <p>{{ message }}</p>
+</div>
+<p><a class="btn" href="/">← Zpět na seznam článků</a></p>
+{% endblock %}

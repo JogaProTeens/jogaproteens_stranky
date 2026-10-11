@@ -1,0 +1,9 @@
+# Everything the editor needs, on top of what the build needs.
+-r requirements.txt
+fastapi==0.143.0
+uvicorn==0.54.0
+python-multipart==0.0.32
+httpx==0.28.1
+Pillow==12.3.0
+pillow-heif==1.8.0
+pytest==9.1.1
