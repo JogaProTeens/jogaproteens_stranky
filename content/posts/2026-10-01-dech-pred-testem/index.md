@@ -1,5 +1,5 @@
 ---
-title: Dech a klid před testem
+title: Dech a klid před operací
 slug: dech-pred-testem
 date: 2026-10-01
 headline: Jednoduché dechové techniky, které fungují i pár minut před testem nebo zkouškou.
