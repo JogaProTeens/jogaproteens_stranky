@@ -6,6 +6,5 @@ headline: Testěščřžýáíé
 cover: cover.webp
 cover_alt: AAA
 orientation: portrait
-draft: true
 ---
 <p>Aaaaaaaa</p>
