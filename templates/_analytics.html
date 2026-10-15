@@ -1,0 +1,97 @@
+{#- Google Analytics 4 + cookie consent. Included at the end of <body> on every page.
+    Nothing here is rendered until GA_MEASUREMENT_ID is set in build.py.
+    GA is loaded ONLY after the visitor clicks "Přijmout" (opt-in, as Czech law requires). -#}
+{% if ga_id %}
+<style>
+  .cc-banner{position:fixed;left:1rem;right:1rem;bottom:1rem;z-index:1000;max-width:34rem;margin:0 auto;
+    background:#FBF8F4;color:#2E4A66;border:1px solid #C9D9E8;border-radius:1rem;padding:1.1rem 1.25rem;
+    box-shadow:0 10px 30px rgba(46,74,102,.18);font:400 .95rem/1.5 "Hanken Grotesk",system-ui,sans-serif;}
+  .cc-banner[hidden]{display:none;}
+  .cc-banner p{margin:0 0 .9rem;}
+  .cc-actions{display:flex;gap:.6rem;flex-wrap:wrap;}
+  .cc-actions button{font:inherit;font-weight:600;padding:.55rem 1.2rem;border-radius:999px;cursor:pointer;
+    border:1.5px solid #2E4A66;background:transparent;color:#2E4A66;}
+  .cc-actions .cc-accept{background:#2E4A66;color:#FBF8F4;}
+  .cc-settings-link{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer;text-decoration:underline;opacity:.8;}
+</style>
+<div class="cc-banner" id="ccBanner" role="dialog" aria-live="polite" aria-label="Souhlas s cookies" hidden>
+  <p>Ráda bych věděla, kolik lidí stránky navštěvuje a co je zajímá. K tomu používám Google Analytics, které ukládá cookies. Smím?</p>
+  <div class="cc-actions">
+    <button type="button" class="cc-accept" id="ccAccept">Přijmout</button>
+    <button type="button" id="ccReject">Odmítnout</button>
+  </div>
+</div>
+<script>
+(function () {
+  var GA_ID = {{ ga_id|tojson }};
+  var KEY = "jpt_consent";               // remembers "granted" or "denied"
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+
+  // Consent Mode v2: everything denied until the visitor says yes.
+  gtag("consent", "default", {
+    ad_storage: "denied", ad_user_data: "denied",
+    ad_personalization: "denied", analytics_storage: "denied"
+  });
+
+  var loaded = false;
+  function loadGA() {
+    if (loaded) return;
+    loaded = true;
+    gtag("consent", "update", { analytics_storage: "granted" });
+    var s = document.createElement("script");
+    s.async = true;
+    s.src = "https://www.googletagmanager.com/gtag/js?id=" + GA_ID;
+    document.head.appendChild(s);
+    gtag("js", new Date());
+    gtag("config", GA_ID);               // sends the page_view
+  }
+
+  function read() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function save(v) { try { localStorage.setItem(KEY, v); } catch (e) {} }
+  function clearGaCookies() {
+    document.cookie.split(";").forEach(function (c) {
+      var name = c.split("=")[0].trim();
+      if (name.indexOf("_ga") === 0) {
+        ["", "; domain=.jogaproteens.cz", "; domain=jogaproteens.cz"].forEach(function (d) {
+          document.cookie = name + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/" + d;
+        });
+      }
+    });
+  }
+
+  var banner = document.getElementById("ccBanner");
+  document.getElementById("ccAccept").addEventListener("click", function () {
+    save("granted"); banner.hidden = true; loadGA();
+  });
+  document.getElementById("ccReject").addEventListener("click", function () {
+    save("denied"); banner.hidden = true;
+    if (loaded) { gtag("consent", "update", { analytics_storage: "denied" }); clearGaCookies(); location.reload(); }
+  });
+  // "Nastavení cookies" link in the footer reopens the banner.
+  document.querySelectorAll("[data-cookie-settings]").forEach(function (el) {
+    el.addEventListener("click", function (e) { e.preventDefault(); banner.hidden = false; });
+  });
+
+  var choice = read();
+  if (choice === "granted") loadGA();
+  else if (choice !== "denied") banner.hidden = false;
+
+  // Custom events. They only reach GA if consent was given (gtag.js is not loaded otherwise).
+  document.addEventListener("click", function (e) {
+    if (!loaded) return;
+    var a = e.target.closest && e.target.closest("a");
+    if (!a) return;
+    var href = a.getAttribute("href") || "";
+    if (href.indexOf("mailto:") === 0) {
+      gtag("event", "contact_click", { contact_method: "email", link_text: a.textContent.trim().slice(0, 100) });
+    } else if (href.indexOf("tel:") === 0) {
+      gtag("event", "contact_click", { contact_method: "phone", link_text: a.textContent.trim().slice(0, 100) });
+    }
+    var cta = a.getAttribute("data-ga-cta");
+    if (cta) gtag("event", "cta_click", { cta_name: cta });
+  });
+})();
+</script>
+{% endif %}

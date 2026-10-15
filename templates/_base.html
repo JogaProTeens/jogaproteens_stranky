@@ -64,7 +64,7 @@
     </div>
     <div class="foot-bottom">
       <span>jogaproteens.cz</span>
-      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens</span>
+      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens{% if ga_id %} · <button type="button" class="cc-settings-link" data-cookie-settings>Nastavení cookies</button>{% endif %}</span>
     </div>
   </div>
 </footer>
@@ -82,5 +82,6 @@
   onScroll(); window.addEventListener('scroll', onScroll, {passive: true});
 </script>
 <script type="module" src="/js/seed.js"></script>
+{% include "_analytics.html" %}
 </body>
 </html>

@@ -27,6 +27,8 @@ ROOT = Path(__file__).parent
 POSTS_DIR = ROOT / "content" / "posts"
 OUT = ROOT / "_site"
 SITE_URL = "https://jogaproteens.cz"
+# Google Analytics 4 Measurement ID (looks like "G-XXXXXXXXXX"). Empty = no analytics, no cookie banner.
+GA_MEASUREMENT_ID = "G-2NEX81G6VX"
 CAROUSEL_LIMIT = 12          # newest posts shown on the homepage
 HEADLINE_MAX = 160           # characters
 
@@ -192,6 +194,7 @@ def make_env() -> Environment:
     )
     env.filters["cs_date"] = czech_date
     env.globals["site_url"] = SITE_URL
+    env.globals["ga_id"] = GA_MEASUREMENT_ID
     return env
 
 

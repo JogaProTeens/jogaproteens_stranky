@@ -212,7 +212,7 @@
       <p>Výzkumy ukázaly, že jóga zlepšuje soustředění, klid, sociální soudržnost a celkovou pohodu. Školy, které jógu zavádějí, uvádějí zlepšení v chování studentů i zlepšení studijních výsledků.</p>
     </div>
 
-    <a href="#kontakt" class="btn btn-ghost" style="margin-top:2.4rem;border-color:var(--accent-tint);color:var(--on-dark);">Domluvit lekci pro školu <span class="arrow">→</span></a>
+    <a href="#kontakt" data-ga-cta="domluvit_lekci_skola" class="btn btn-ghost" style="margin-top:2.4rem;border-color:var(--accent-tint);color:var(--on-dark);">Domluvit lekci pro školu <span class="arrow">→</span></a>
   </div>
 </section>
 
@@ -424,7 +424,7 @@
     </div>
     <div class="foot-bottom">
       <span>jogaproteens.cz</span>
-      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens</span>
+      <span>© <span id="year"></span> Petra Petrů · Jóga pro teens{% if ga_id %} · <button type="button" class="cc-settings-link" data-cookie-settings>Nastavení cookies</button>{% endif %}</span>
     </div>
   </div>
 </footer>
@@ -586,5 +586,6 @@
 
 <script type="module" src="/js/seed.js"></script>
 
+{% include "_analytics.html" %}
 </body>
 </html>
