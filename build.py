@@ -25,12 +25,15 @@ from jinja2 import Environment, FileSystemLoader, StrictUndefined
 
 ROOT = Path(__file__).parent
 POSTS_DIR = ROOT / "content" / "posts"
+LESSONS_DIR = ROOT / "content" / "lekce"   # lesson schedule + gallery photos
+LESSONS_FILE = "lekce.yaml"
 OUT = ROOT / "_site"
 SITE_URL = "https://jogaproteens.cz"
 # Google Analytics 4 Measurement ID (looks like "G-XXXXXXXXXX"). Empty = no analytics, no cookie banner.
 GA_MEASUREMENT_ID = "G-2NEX81G6VX"
 CAROUSEL_LIMIT = 12          # newest posts shown on the homepage
 HEADLINE_MAX = 160           # characters
+TEACHING_SINCE = 2013        # Petra leads her own courses since this year
 
 MONTHS_CS = ["ledna", "února", "března", "dubna", "května", "června",
              "července", "srpna", "září", "října", "listopadu", "prosince"]
@@ -178,6 +181,78 @@ def load_posts(include_drafts: bool) -> list[Post]:
     return sorted(visible, key=lambda p: (p.date, p.slug), reverse=True)
 
 
+# ---------- lesson schedule (Lekce) ----------
+
+NOTE_TAGS = {"p", "br", "a", "strong", "b", "em", "i"}   # formatting allowed in a card's note
+LESSON_FIELDS = ("day", "time", "place", "address")      # required on every card
+
+
+@dataclass
+class Lesson:
+    day: str            # card heading, e.g. "Pondělí"
+    time: str           # "17:00–18:00"
+    place: str          # "Podiatrická ambulance"
+    address: str        # "Poliklinika Petrovice, Ohmova 271"
+    note_html: str      # optional, may contain links
+
+
+@dataclass
+class GalleryPhoto:
+    file: str
+    alt: str
+    orientation: str    # "portrait" (2:3) or "landscape" (3:2)
+
+
+@dataclass
+class Schedule:
+    intro: str
+    lessons: list[Lesson]
+    gallery: list[GalleryPhoto]
+
+
+def clean_note(raw: str) -> str:
+    """Sanitise a card's note. Links to other websites open in a new tab."""
+    html = nh3.clean(raw.replace("&nbsp;", " ").replace("\u00a0", " "),
+                     tags=NOTE_TAGS, attributes={"a": {"href"}},
+                     url_schemes={"http", "https", "mailto", "tel"}, link_rel="noopener noreferrer")
+    html = re.sub(r'<a href="(https?://[^"]*)"', r'<a href="\1" target="_blank"', html)
+    html = re.sub(r"(<p>(\s|<br>)*</p>\s*)+$", "", html).strip()      # empty lines at the end
+    return "" if html in ("<p></p>", "<br>") else html
+
+
+def load_schedule(folder: Path = LESSONS_DIR) -> Schedule:
+    """Read and check content/lekce/lekce.yaml. A missing file means no schedule yet."""
+    path = folder / LESSONS_FILE
+    if not path.is_file():
+        return Schedule(intro="", lessons=[], gallery=[])
+    source = path.relative_to(ROOT) if path.is_relative_to(ROOT) else Path(LESSONS_FILE)
+    data = yaml.safe_load(path.read_text(encoding="utf-8")) or {}
+    if not isinstance(data, dict):
+        raise BuildError(f"{source}: the file is not valid")
+
+    lessons = []
+    for n, item in enumerate(data.get("lessons") or [], start=1):
+        if not isinstance(item, dict):
+            raise BuildError(f"{source}: lesson {n} is not valid")
+        missing = [k for k in LESSON_FIELDS if not str(item.get(k) or "").strip()]
+        if missing:
+            raise BuildError(f"{source}: lesson {n} is missing {', '.join(missing)}")
+        lessons.append(Lesson(*(str(item[k]).strip() for k in LESSON_FIELDS),
+                              note_html=clean_note(str(item.get("note") or ""))))
+
+    gallery = []
+    for n, item in enumerate(data.get("gallery") or [], start=1):
+        if not isinstance(item, dict) or not item.get("file") or not item.get("alt"):
+            raise BuildError(f"{source}: gallery photo {n} needs file and alt")
+        if item.get("orientation") not in ("portrait", "landscape"):
+            raise BuildError(f"{source}: gallery photo {n} needs orientation portrait or landscape")
+        if not (folder / str(item["file"])).is_file():
+            raise BuildError(f"{source}: gallery photo {item['file']!r} not found")
+        gallery.append(GalleryPhoto(str(item["file"]), str(item["alt"]), item["orientation"]))
+
+    return Schedule(intro=str(data.get("intro") or "").strip(), lessons=lessons, gallery=gallery)
+
+
 # ---------- rendering ----------
 
 def czech_date(value: dt.date) -> str:
@@ -194,6 +269,8 @@ def make_env() -> Environment:
     )
     env.filters["cs_date"] = czech_date
     env.globals["site_url"] = SITE_URL
+    # "13 let vedu kurzy" on the homepage counts itself up every year
+    env.globals["years_teaching"] = dt.date.today().year - TEACHING_SINCE
     env.globals["ga_id"] = GA_MEASUREMENT_ID
     return env
 
@@ -221,15 +298,22 @@ def write_sitemap(posts: list[Post]) -> None:
 
 def build(include_drafts: bool = False) -> None:
     posts = load_posts(include_drafts)   # validate before touching _site/
+    schedule = load_schedule()
 
     if OUT.exists():
         shutil.rmtree(OUT)
     shutil.copytree(ROOT / "static", OUT)
 
+    if schedule.gallery:
+        (OUT / "lekce").mkdir()
+        for photo in schedule.gallery:
+            shutil.copy2(LESSONS_DIR / photo.file, OUT / "lekce" / photo.file)
+
     env = make_env()
     write(OUT / "index.html", env.get_template("index.html").render(
         posts=posts[:CAROUSEL_LIMIT],
         has_more=len(posts) > CAROUSEL_LIMIT,
+        schedule=schedule,
     ))
     write(OUT / "inspirace" / "index.html",
           env.get_template("archive.html").render(posts=posts))

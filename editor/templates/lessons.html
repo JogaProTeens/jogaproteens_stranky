@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% set nav = "lessons" %}
+{% block title %}Lekce{% endblock %}
+{% block head %}<link rel="stylesheet" href="/static/vendor/quill.snow.css">{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Kde se potkáme</h1>
+</div>
+
+{% if saved %}
+<div class="notice" role="status">
+  <p>Uloženo.</p>
+  {% if commit %}
+  <p class="deploy" data-commit="{{ commit }}" data-url="{{ site_url }}/#lekce" data-label="Otevřít web">Web se aktualizuje, obvykle do 2 minut…</p>
+  {% elif settings.store == "local" %}
+  <p class="muted">Zkušební režim: náhled uvidíte po spuštění <code>python build.py</code>.</p>
+  {% endif %}
+</div>
+{% endif %}
+
+<form id="lessons-form" class="post-form" novalidate>
+  <div class="field">
+    <label for="intro">Úvodní věta <span class="hint">nepovinná, ukáže se nad kartičkami</span></label>
+    <input id="intro" type="text" maxlength="200" value="{{ data.intro }}">
+  </div>
+
+  <section class="field">
+    <h2 class="section-title">Lekce</h2>
+    <p class="hint">Každá lekce je jedna kartička na webu, ve stejném pořadí jako tady. Do poznámky můžete vložit odkaz:
+      označte slova a klikněte na ikonu řetízku. Odkaz na kontaktní formulář na webu je <code>#kontakt</code>.</p>
+    <ol class="lesson-list" id="lesson-list"></ol>
+    <button class="btn btn-add" type="button" id="add-lesson">+ Přidat lekci</button>
+  </section>
+
+  <section class="field">
+    <h2 class="section-title">Fotky pod lekcemi</h2>
+    <p class="hint">Ukážou se v posuvném pásu pod kartičkami. Fotky na výšku i na šířku jsou v pořádku. Fotky dětí jen se souhlasem rodičů.</p>
+    <ol class="gallery-list" id="gallery-list"></ol>
+    <label class="btn btn-add" for="gallery-add">+ Přidat fotky</label>
+    <input id="gallery-add" type="file" accept="image/*,.heic,.heif" multiple class="visually-hidden">
+  </section>
+
+  <div class="errors" id="errors" role="alert" hidden></div>
+
+  <div class="actions">
+    <button class="btn btn-primary" type="submit">Uložit na web</button>
+  </div>
+</form>
+
+<template id="lesson-template">
+  <li class="lesson">
+    <div class="lesson-head">
+      <span class="lesson-number"></span>
+      <div class="move">
+        <button class="btn btn-quiet btn-small" type="button" data-move="-1" title="Posunout výš" aria-label="Posunout výš">↑</button>
+        <button class="btn btn-quiet btn-small" type="button" data-move="1" title="Posunout níž" aria-label="Posunout níž">↓</button>
+        <button class="btn btn-danger btn-small" type="button" data-remove>Odebrat</button>
+      </div>
+    </div>
+    <div class="lesson-grid">
+      <label><span>Nadpis <span class="hint">třeba „Pondělí“</span></span><input type="text" data-key="day" maxlength="40"></label>
+      <label><span>Čas <span class="hint">třeba „17:00–18:00“</span></span><input type="text" data-key="time" maxlength="40"></label>
+      <label><span>Místo <span class="hint">velkým písmem na kartičce</span></span><input type="text" data-key="place" maxlength="100"></label>
+      <label><span>Adresa <span class="hint">ulice a město</span></span><input type="text" data-key="address" maxlength="150"></label>
+    </div>
+    <div class="lesson-note">
+      <span class="note-label">Poznámka <span class="hint">nepovinná</span></span>
+      <div class="editor-wrap editor-small"><div class="note-editor"></div></div>
+    </div>
+  </li>
+</template>
+
+<template id="photo-template">
+  <li class="photo">
+    <div class="photo-thumb"></div>
+    <label><span>Popis fotky <span class="hint">pro nevidomé a vyhledávače</span></span><input type="text" data-key="alt" maxlength="200"></label>
+    <div class="move">
+      <button class="btn btn-quiet btn-small" type="button" data-move="-1" title="Posunout dopředu" aria-label="Posunout dopředu">←</button>
+      <button class="btn btn-quiet btn-small" type="button" data-move="1" title="Posunout dozadu" aria-label="Posunout dozadu">→</button>
+      <button class="btn btn-danger btn-small" type="button" data-remove>Odebrat</button>
+    </div>
+  </li>
+</template>
+
+<script type="application/json" id="schedule-data">{{ data | tojson }}</script>
+{% endblock %}
+{% block scripts %}
+<script src="/static/vendor/quill.js"></script>
+<script src="/static/editor.js" defer></script>
+<script src="/static/lessons.js" defer></script>
+{% endblock %}

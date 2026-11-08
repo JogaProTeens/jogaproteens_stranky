@@ -1,0 +1,25 @@
+# Lekce: edited in the editor (Lekce page). The site is built from this file.
+intro: Tento školní rok se můžeme potkat na dvou místech v Praze.
+lessons:
+- day: Pondělí
+  time: 17:00–18:00
+  place: Podiatrická ambulance
+  address: Poliklinika Petrovice, Ohmova 271
+  note: <p>V případě zájmu o lekci mi <a href="#kontakt">napište</a>.</p>
+- day: Středa
+  time: 18:00–19:00
+  place: DůmUm, Praha – Hostivař
+  address: Golfová 910/10, Praha 15
+  note: <p>Na tyto lekce je nutné se hlásit přímo přes <a href="https://dumum.cz/">web DůmUm</a>.</p>
+- day: Čtvrtek
+  time: 16:30–17:30
+  place: Podiatrická ambulance
+  address: Poliklinika Petrovice, Ohmova 271
+  note: <p>V případě zájmu o lekci mi <a href="#kontakt">napište</a>.</p>
+gallery:
+- file: gal-c66eb5a757.webp
+  alt: Cvičení na balančních pomůckách venku
+  orientation: landscape
+- file: gal-ff335203df.webp
+  alt: Dívky při jógové lekci
+  orientation: landscape

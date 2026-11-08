@@ -1,4 +1,4 @@
-"""Petra's editor for the Inspirace posts.
+"""Petra's editor for the Inspirace posts and the Lekce schedule.
 
 Run it from the project folder:
     uvicorn editor.app:app --reload --port 8001
@@ -10,6 +10,7 @@ Online (Render) it starts with:
 from __future__ import annotations
 
 import datetime as dt
+import json
 import mimetypes
 import re
 import secrets
@@ -25,12 +26,12 @@ from starlette.datastructures import UploadFile
 from starlette.middleware.sessions import SessionMiddleware
 
 import build
-from editor import auth, images
+from editor import auth, images, schedule
 from editor.config import REPO_ROOT, load_settings
 from editor.content import (COVER_FILES, FILE_RE, FOLDER_RE, check_with_build, compose,
                             parse, resolve_images, sanitise, show_images_in_editor,
                             slugify, summarise, unique_slug)
-from editor.store import GitHubStore, LocalStore, Store, StoreError
+from editor.store import LESSONS_PATH, POSTS_PATH, GitHubStore, LocalStore, Store, StoreError
 
 HERE = Path(__file__).parent
 TITLE_MAX = 120
@@ -39,20 +40,23 @@ SHA_RE = re.compile(r"^[0-9a-f]{40}$")
 settings = load_settings()
 
 
-def make_store() -> Store:
+def make_store(base: str) -> Store:
     if settings.store == "github":
-        return GitHubStore(settings.github_token, settings.github_repo, settings.github_branch)
-    return LocalStore(REPO_ROOT)
+        return GitHubStore(settings.github_token, settings.github_repo, settings.github_branch,
+                           base=base)
+    return LocalStore(REPO_ROOT, base)
 
 
-store: Store = make_store()
+store: Store = make_store(POSTS_PATH)              # Inspirace articles
+lessons_store: Store = make_store(LESSONS_PATH)    # Lekce cards and gallery
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     yield
-    if isinstance(store, GitHubStore):
-        await store.client.aclose()
+    for s in (store, lessons_store):
+        if isinstance(s, GitHubStore):
+            await s.client.aclose()
 
 
 app = FastAPI(title="Editor Jóga pro teens", lifespan=lifespan,
@@ -390,3 +394,103 @@ async def delete_post(folder: str):
     commit = await store.commit(f"Smazáno: {post.meta.get('title', folder)}", {}, files)
     target = "/?smazano=1" + (f"&commit={commit}" if commit else "")
     return RedirectResponse(target, status_code=303)
+
+
+# ---------- Lekce: lesson cards and gallery ----------
+
+async def read_schedule() -> tuple[dict, set[str]]:
+    snap = await lessons_store.snapshot()
+    text = None
+    if build.LESSONS_FILE in snap.files:
+        text = (await lessons_store.read(build.LESSONS_FILE)).decode("utf-8")
+    return schedule.read(text), snap.files
+
+
+@app.get("/lekce")
+async def lessons_page(request: Request):
+    data, _ = await read_schedule()
+    commit = request.query_params.get("commit", "")
+    return render(request, "lessons.html", {
+        "data": data,
+        "saved": request.query_params.get("ulozeno") == "1",
+        "commit": commit if SHA_RE.match(commit) else "",
+    })
+
+
+@app.get("/lekce-foto/{name}")
+async def lesson_photo(name: str):
+    if not FILE_RE.match(name):
+        return PlainTextResponse("Nenalezeno", status_code=404)
+    try:
+        data = await lessons_store.read(name)
+    except StoreError:
+        return PlainTextResponse("Nenalezeno", status_code=404)
+    media_type = mimetypes.guess_type(name)[0] or "application/octet-stream"
+    return Response(data, media_type=media_type, headers={"Cache-Control": "private, max-age=300"})
+
+
+@app.post("/lekce/ulozit")
+async def save_lessons(request: Request):
+    """The page sends the whole schedule as JSON plus any new photos."""
+    try:
+        form = await request.form(max_files=60, max_fields=80, max_part_size=2 * 1024 * 1024)
+        return await save_schedule(form)
+    except StoreError as error:
+        return JSONResponse({"ok": False, "errors": [str(error)]}, status_code=502)
+
+
+async def save_schedule(form) -> dict | JSONResponse:
+    try:
+        payload = json.loads(text_field(form, "data") or "{}")
+    except json.JSONDecodeError:
+        return JSONResponse({"ok": False, "errors": ["Formulář se nepodařilo přečíst."]},
+                            status_code=400)
+
+    intro = " ".join(str(payload.get("intro") or "").split())
+    lessons, errors = schedule.check_lessons(payload.get("lessons") or [])
+    if len(intro) > schedule.INTRO_MAX:
+        errors.append(f"Úvodní věta může mít nejvýš {schedule.INTRO_MAX} znaků.")
+
+    current, files = await read_schedule()
+    known = {g.get("file"): g for g in current["gallery"]}
+    put: dict[str, bytes] = {}
+    gallery: list[dict] = []
+    raw_gallery = payload.get("gallery") or []
+    if len(raw_gallery) > schedule.MAX_PHOTOS:
+        errors.append(f"Fotek může být nejvýš {schedule.MAX_PHOTOS}.")
+    for n, item in enumerate(raw_gallery[:schedule.MAX_PHOTOS], start=1):
+        item = item if isinstance(item, dict) else {}
+        alt = " ".join(str(item.get("alt") or "").split())[:200]
+        if not alt:
+            errors.append(f"Fotka {n}: doplňte popis (pro nevidomé a vyhledávače).")
+        if item.get("file") in known:                       # a photo already on the site
+            gallery.append({"file": item["file"], "alt": alt,
+                            "orientation": known[item["file"]].get("orientation", "landscape")})
+            continue
+        upload = form.get(str(item.get("upload") or ""))
+        if not isinstance(upload, UploadFile):
+            errors.append(f"Fotka {n} se nenahrála, zkuste ji vybrat znovu.")
+            continue
+        try:
+            name, data, orientation = images.gallery_photo(await upload.read())
+        except images.ImageError as error:
+            errors.append(f"Fotka {n}: {error}")
+            continue
+        put[name] = data
+        gallery.append({"file": name, "alt": alt, "orientation": orientation})
+
+    if errors:
+        return JSONResponse({"ok": False, "errors": errors}, status_code=400)
+
+    yaml_text = schedule.compose(intro, lessons, gallery)
+    try:
+        schedule.check_with_build(yaml_text, [g["file"] for g in gallery])
+    except build.BuildError as error:
+        return JSONResponse({"ok": False, "errors": [f"Kontrola webu neprošla: {error}"]},
+                            status_code=400)
+
+    put[build.LESSONS_FILE] = yaml_text.encode("utf-8")
+    used = {g["file"] for g in gallery}
+    delete = [name for name in files if FILE_RE.match(name) and name not in used]
+    commit = await lessons_store.commit("Lekce: úprava rozvrhu a galerie", put, delete)
+    return {"ok": True, "redirect": "/lekce?ulozeno=1" + (f"&commit={commit}" if commit else "")}

@@ -152,3 +152,38 @@ textarea{ resize:vertical; }
   .post-row-actions{ width:100%; }
   .actions .btn{ flex:1; }
 }
+
+/* top bar tabs */
+.topbar-left{ display:flex; align-items:center; gap:1.4rem; flex-wrap:wrap; }
+.tabs{ display:flex; gap:.3rem; }
+.tabs a{ text-decoration:none; font-weight:600; font-size:.95rem; padding:.35rem .8rem; border-radius:999px; color:var(--ink-soft); }
+.tabs a:hover{ color:var(--accent); background:var(--accent-tint); }
+.tabs a[aria-current=page]{ color:var(--bg); background:var(--accent); }
+
+/* Lekce page */
+.section-title{ font-family:var(--display); font-weight:400; font-size:1.7rem; line-height:1.2; }
+.btn-small{ min-height:36px; padding:.3rem .8rem; font-size:.88rem; }
+.move{ display:flex; gap:.3rem; flex-wrap:wrap; }
+.lesson-list, .gallery-list{ list-style:none; display:grid; gap:.9rem; margin:.6rem 0 .4rem; }
+.lesson{ background:var(--card); border:1px solid var(--line); border-left:4px solid var(--primary);
+  border-radius:var(--radius); padding:1rem 1.2rem 1.2rem; display:grid; gap:.8rem; }
+.lesson-head{ display:flex; justify-content:space-between; align-items:center; gap:1rem; flex-wrap:wrap; }
+.lesson-number{ font-family:var(--display); font-size:1.3rem; }
+.lesson-grid{ display:grid; grid-template-columns:1fr 1fr; gap:.8rem 1rem; }
+.lesson-grid label, .photo label{ display:grid; gap:.3rem; }
+.lesson-note{ display:grid; gap:.3rem; }
+.note-label{ font-weight:600; }
+.editor-small .ql-editor{ min-height:70px; padding:.7rem .85rem; font-size:1rem; line-height:1.6; }
+.editor-small .ql-toolbar.ql-snow{ position:static; padding:.3rem .5rem; }
+.gallery-list{ grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); }
+.photo{ background:var(--card); border:1px solid var(--line); border-radius:var(--radius); padding:.8rem;
+  display:grid; gap:.6rem; align-content:start; }
+.photo-thumb{ aspect-ratio:3/2; background:var(--primary-tint); border-radius:10px; overflow:hidden;
+  display:grid; place-items:center; text-align:center; color:var(--ink-soft); font-size:.85rem; }
+.photo-thumb span{ padding:.8rem; }
+.photo-thumb img{ width:100%; height:100%; object-fit:contain; display:block; }
+.btn-add{ justify-self:start; }
+.lesson-grid input{ align-self:end; }
+@media (max-width:640px){
+  .lesson-grid{ grid-template-columns:1fr; }
+}

@@ -1,9 +1,11 @@
-// Inspirace carousel.
+// Carousels (Inspirace posts, Lekce gallery).
 // - Arrow buttons scroll by one card and hide at each end.
 // - Cards only partly in view get a lower --focus, which CSS turns into blur and fade.
 // - Clicking a blurred card brings it into view instead of opening it.
 // Swiping, trackpad and keyboard scrolling are native browser behaviour.
 document.querySelectorAll('[data-carousel]').forEach((carousel) => {
+  if (carousel.dataset.ready) return;     // the script can be included more than once
+  carousel.dataset.ready = '1';
   const track = carousel.querySelector('.carousel-track');
   const cards = [...track.querySelectorAll('.post-card')];
   const prev = carousel.querySelector('[data-dir="-1"]');

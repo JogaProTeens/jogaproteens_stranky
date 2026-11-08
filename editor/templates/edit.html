@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% set nav = "posts" %}
 {% block title %}{% if post %}Upravit článek{% else %}Nový článek{% endif %}{% endblock %}
 {% block head %}<link rel="stylesheet" href="/static/vendor/quill.snow.css">{% endblock %}
 {% block content %}

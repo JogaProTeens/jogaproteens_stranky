@@ -25,7 +25,7 @@ if (deploy) {
         link.href = deploy.dataset.url;
         link.target = '_blank';
         link.rel = 'noopener';
-        link.textContent = 'Otevřít článek';
+        link.textContent = deploy.dataset.label || 'Otevřít článek';
         deploy.append(link);
       }
       return;

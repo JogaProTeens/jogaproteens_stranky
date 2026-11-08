@@ -13,7 +13,15 @@
 </head>
 <body>
 <header class="topbar">
-  <a class="brand" href="/">jóga pro <span>teens</span> · editor</a>
+  <div class="topbar-left">
+    <a class="brand" href="/">jóga pro <span>teens</span> · editor</a>
+    {% if not hide_logout %}
+    <nav class="tabs" aria-label="Části webu">
+      <a href="/" {% if nav == "posts" %}aria-current="page"{% endif %}>Inspirace</a>
+      <a href="/lekce" {% if nav == "lessons" %}aria-current="page"{% endif %}>Lekce</a>
+    </nav>
+    {% endif %}
+  </div>
   <div class="topbar-right">
     <span class="mode">{% if settings.store == "github" %}Ukládá se na web{% else %}Zkušební režim: ukládá se jen do počítače{% endif %}</span>
     {% if settings.login_required and not hide_logout %}

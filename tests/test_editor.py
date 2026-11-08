@@ -366,3 +366,85 @@ def test_github_bad_token_gives_a_clear_message():
     store = GitHubStore("bad", "o/r", transport=httpx.MockTransport(lambda r: httpx.Response(401)))
     with pytest.raises(StoreError, match="token"):
         asyncio.run(store.snapshot())
+
+
+# ---------- Lekce: lesson cards and gallery ----------
+
+import build                                   # noqa: E402
+from editor import schedule                    # noqa: E402
+
+
+@pytest.fixture
+def lessons_client(tmp_path, monkeypatch):
+    from fastapi.testclient import TestClient
+    monkeypatch.setattr(editor_app, "lessons_store", LocalStore(tmp_path, "content/lekce"))
+    return TestClient(editor_app.app), tmp_path / "content" / "lekce"
+
+
+def lesson(**overrides):
+    data = {"day": "Pondělí", "time": "17:00–18:00", "place": "Podiatrická ambulance",
+            "address": "Ohmova 271", "note": '<p>Napište mi <a href="#kontakt">tady</a>.</p>'}
+    data.update(overrides)
+    return data
+
+
+def save_lessons(http, payload, files=None):
+    return http.post("/lekce/ulozit", data={"data": json.dumps(payload)}, files=files or {})
+
+
+def test_lessons_and_gallery_round_trip(lessons_client):
+    http, folder = lessons_client
+    assert http.get("/lekce").status_code == 200           # no file yet: empty page
+
+    payload = {"intro": "Potkáme se v Praze.",
+               "lessons": [lesson(), lesson(day="Středa", note='<p>Přes <a href="https://dumum.cz/">web</a></p>')],
+               "gallery": [{"upload": "upload/0", "alt": "Na louce"},
+                           {"upload": "upload/1", "alt": "Na výšku"}]}
+    r = save_lessons(http, payload, {"upload/0": ("a.jpg", photo(), "image/jpeg"),
+                                     "upload/1": ("b.jpg", photo((1000, 1600)), "image/jpeg")})
+    assert r.json()["ok"], r.json()
+
+    saved = build.load_schedule(folder)
+    assert [l.day for l in saved.lessons] == ["Pondělí", "Středa"]
+    assert 'target="_blank"' in saved.lessons[1].note_html
+    assert [g.orientation for g in saved.gallery] == ["landscape", "portrait"]
+    first, second = (g.file for g in saved.gallery)
+    assert http.get(f"/lekce-foto/{first}").headers["content-type"] == "image/webp"
+
+    # Reorder, drop a lesson and a photo: the unused photo file is deleted
+    data = schedule.read((folder / "lekce.yaml").read_text())
+    payload = {"intro": "", "lessons": [lesson(day="Čtvrtek", note="<p></p>")],
+               "gallery": [{"file": second, "alt": "Na výšku"}]}
+    assert save_lessons(http, payload).json()["ok"]
+    saved = build.load_schedule(folder)
+    assert [l.day for l in saved.lessons] == ["Čtvrtek"] and saved.lessons[0].note_html == ""
+    assert sorted(p.name for p in folder.iterdir()) == sorted(["lekce.yaml", second])
+    assert data["intro"] == "Potkáme se v Praze."
+
+
+def test_lesson_errors_are_in_czech(lessons_client):
+    http, folder = lessons_client
+    r = save_lessons(http, {"lessons": [lesson(place="", time="x" * 50)],
+                            "gallery": [{"upload": "upload/0", "alt": ""}]})
+    assert r.status_code == 400
+    errors = r.json()["errors"]
+    assert "Lekce 1: doplňte místo." in errors
+    assert "Lekce 1: čas může mít nejvýš 40 znaků." in errors
+    assert any(e.startswith("Fotka 1: doplňte popis") for e in errors)
+    assert "Fotka 1 se nenahrála, zkuste ji vybrat znovu." in errors
+    assert not folder.exists()
+
+
+def test_lesson_note_is_cleaned():
+    lessons, errors = schedule.check_lessons([lesson(
+        note='<p onclick="x()">Ahoj&nbsp;<script>alert(1)</script><a href="javascript:x()">zlé</a>'
+             '<img src="x.jpg"></p>')])
+    assert not errors
+    assert lessons[0]["note"] == "<p>Ahoj <a rel=\"noopener noreferrer\">zlé</a></p>"
+
+
+def test_gallery_names_from_another_folder_are_refused(lessons_client):
+    http, _ = lessons_client
+    assert http.get("/lekce-foto/..%2Fsecret.webp").status_code == 404
+    r = save_lessons(http, {"lessons": [], "gallery": [{"file": "../posts/x.webp", "alt": "x"}]})
+    assert r.status_code == 400

@@ -6,7 +6,8 @@ know which one it talks to:
   LocalStore   files in content/posts/ on this computer (for trying things out)
   GitHubStore  the repository on GitHub; every save is one atomic commit
 
-All paths passed in and out are relative to content/posts/,
+All paths passed in and out are relative to the store's folder (content/posts/
+for articles, content/lekce/ for the lesson schedule),
 for example "2026-10-08-dech-pred-testem/index.md".
 """
 from __future__ import annotations
@@ -20,6 +21,7 @@ from typing import Protocol
 import httpx
 
 POSTS_PATH = "content/posts"
+LESSONS_PATH = "content/lekce"
 
 
 class StoreError(RuntimeError):
@@ -59,8 +61,8 @@ def safe_path(path: str) -> str:
 # ---------- local folder ----------
 
 class LocalStore:
-    def __init__(self, repo_root: Path):
-        self.root = repo_root / POSTS_PATH
+    def __init__(self, repo_root: Path, base: str = POSTS_PATH):
+        self.root = repo_root / base
 
     async def snapshot(self) -> Snapshot:
         if not self.root.exists():
@@ -109,8 +111,9 @@ class GitHubStore:
     RETRIES = 3
 
     def __init__(self, token: str, repo: str, branch: str = "main",
-                 transport: httpx.AsyncBaseTransport | None = None):
+                 transport: httpx.AsyncBaseTransport | None = None, base: str = POSTS_PATH):
         self.repo = repo
+        self.base = base                          # folder in the repo this store works in
         self.branch = branch
         self.client = httpx.AsyncClient(
             base_url=f"{self.API}/repos/{repo}",
@@ -149,7 +152,7 @@ class GitHubStore:
         data = self._ok(await self._call("GET", f"/git/trees/{tree_sha}", params={"recursive": "1"}))
         if data.get("truncated"):
             raise StoreError("Repozitář je příliš velký na načtení najednou.")
-        prefix = POSTS_PATH + "/"
+        prefix = self.base + "/"
         return {item["path"][len(prefix):]: item["sha"] for item in data["tree"]
                 if item["type"] == "blob" and item["path"].startswith(prefix)}
 
@@ -191,9 +194,9 @@ class GitHubStore:
             # 2. Start from wherever the branch is right now.
             parent, base_tree = await self._head()
             existing = await self._tree(base_tree)
-            entries = [{"path": f"{POSTS_PATH}/{p}", "mode": "100644", "type": "blob", "sha": s}
+            entries = [{"path": f"{self.base}/{p}", "mode": "100644", "type": "blob", "sha": s}
                        for p, s in blobs.items()]
-            entries += [{"path": f"{POSTS_PATH}/{safe_path(p)}", "mode": "100644",
+            entries += [{"path": f"{self.base}/{safe_path(p)}", "mode": "100644",
                          "type": "blob", "sha": None}
                         for p in delete if p in existing and p not in blobs]
             # 3. One tree and one commit holding every change.

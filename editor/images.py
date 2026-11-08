@@ -21,6 +21,7 @@ COVER_LONG_EDGE = 1600            # post page
 CARD_HEIGHT = 760                 # carousel card, 2x its height on screen
 SHARE_SIZE = (1200, 630)          # link previews on Facebook, WhatsApp...
 BODY_LONG_EDGE = 1600             # photos inside the text
+GALLERY_LONG_EDGE = 1200          # Lekce gallery cards (shown about 380 px tall)
 WEBP_QUALITY = 82
 
 
@@ -98,3 +99,13 @@ def body_photo(data: bytes) -> tuple[str, bytes]:
     the same photo saved twice is stored once."""
     webp = to_webp(shrink(open_photo(data), BODY_LONG_EDGE))
     return f"img-{hashlib.sha1(webp).hexdigest()[:10]}.webp", webp
+
+
+def gallery_photo(data: bytes) -> tuple[str, bytes, str]:
+    """A photo for the Lekce gallery: cropped to the card shape (2:3 or 3:2,
+    whichever is closer). Returns its file name, the file and the orientation."""
+    photo = open_photo(data)
+    orientation = "landscape" if photo.width > photo.height else "portrait"
+    cropped = crop_to_ratio(photo, RATIOS[orientation])
+    webp = to_webp(shrink(cropped, GALLERY_LONG_EDGE))
+    return f"gal-{hashlib.sha1(webp).hexdigest()[:10]}.webp", webp, orientation

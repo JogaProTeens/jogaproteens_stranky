@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Jóga pro teens | Lekce jógy pro dospívající v Praze a programy pro školy</title>
-<meta name="description" content="TEENJÓGA, jóga pro dospívající. Lekce v Praze (Petrovice, Hostivař) a programy pro školy. Vede Petra Petrů, lektorka dětské jógy od roku 2013.">
+<meta name="description" content="Jóga jako zdravý životní styl pro teenagery. Pravidelné cvičení jógy pomáhá teenagerům nejen po fyzické, ale i po mentální stránce. Učí je lépe zvládat každodenní výzvy, pečovat o své tělo a mysl a podporuje zdravý životní styl.">
 
 <link rel="canonical" href="https://jogaproteens.cz/">
 <meta property="og:type" content="website">
@@ -12,7 +12,7 @@
 <meta property="og:locale" content="cs_CZ">
 <meta property="og:site_name" content="Jóga pro teens">
 <meta property="og:title" content="Jóga pro teens | Lekce jógy pro dospívající v Praze">
-<meta property="og:description" content="Lekce jógy pro dospívající v Praze a programy pro školy. Vede Petra Petrů.">
+<meta property="og:description" content="Jóga jako zdravý životní styl pro teenagery. Lekce jógy pro dospívající v Praze a programy pro školy.">
 <meta property="og:image" content="https://jogaproteens.cz/brand-assets/logo/og-image.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
@@ -142,11 +142,13 @@
     <img src="brand-assets/logo/icon-full-color.svg" alt="">
   </div>
   <div class="wrap hero-content">
-    <h1>Jóga pro dospívající <em>pro tělo, dech a klidnou hlavu.</em></h1>
+    <h1>Jóga pro teens <em>zdravé tělo, dech a klidná hlava</em></h1>
     <div class="hero-deco-m" aria-hidden="true"><img src="brand-assets/logo/icon-full-color.svg" alt=""></div>
     <div class="hero-lower">
       <div class="hero-copy">
-        <p class="lead">TEENJÓGA není zaměřená na výkon ani na dokonalé pozice. Podporuje zdravý vývoj dospívajících, správné držení těla, budování sebevědomí a zvládání stresu, to vše v bezpečné a přátelské atmosféře. A je hravá.</p>
+        <p class="lead">V lekcích se učíme vnímat své tělo, naslouchat mu a pečovat o něj tak, aby nám v něm bylo dobře. Nacházíme vnitřní pohodu, zdravé sebevědomí, sílu i flexibilitu.</p>
+        <p class="lead">Objevíme, jak nám může dech pomoci zvládat stres, napětí a náročné situace každodenního života.</p>
+        <p class="lead">Každá lekce je přizpůsobená aktuální náladě, potřebám a energii skupiny. Je to prostor, kde můžeš zpomalit, dobít baterky a být chvíli sám/sama sebou. Každá je trochu jiná, stejně jako my.</p>
         <div class="hero-cta">
           <a href="#pro-skoly" class="btn btn-solid">Pro školy <span class="arrow">→</span></a>
           <a href="#lekce" class="btn btn-ghost">Lekce</a>
@@ -154,9 +156,9 @@
       </div>
     </div>
     <div class="hero-meta">
-      <div class="hm-item"><strong>2013</strong><span>vedu vlastní kurzy od</span></div>
-      <div class="hm-item"><strong>11–19</strong><span>věk účastnic</span></div>
-      <div class="hm-item"><strong>3×</strong><span>týdně v Praze</span></div>
+      <div class="hm-item"><strong>{{ years_teaching }}</strong><span>let vedu kurzy jógy pro děti a teenky</span></div>
+      <div class="hm-item"><strong>11–15</strong><span>tolik let je slečnám na lekcích</span></div>
+      {% if schedule.lessons %}<div class="hm-item"><strong>{{ schedule.lessons | length }}×</strong><span>týdně v Praze</span></div>{% endif %}
     </div>
   </div>
 </section>
@@ -166,7 +168,7 @@
   <div class="wrap reveal mid">
     <span class="eyebrow">Teenjóga</span>
     <h2 class="h-sec wide">Čím se TEENJÓGA liší</h2>
-    <p class="lead">Není zaměřená na výkon ani dokonalé pozice, ale na podporu zdravého vývoje dospívajících, budování sebevědomí, správné držení těla a zvládání stresu v bezpečné a přátelské atmosféře. Je hravá.</p>
+    <p class="lead">Lekce teen jógy jsou hravé. Zaměřujeme se v nich na vnímání těla a jeho správné držení, na rovnováhu, která teenkám dodá přirozené sebevědomí a pomůže jim respektovat sebe i své okolí. Učíme se odpočívat i meditovat. Lekce jsou doplněné o balanční cvičení na nestabilních plochách a jsou vždy přizpůsobeny momentální náladě, potřebám a rozpoložení skupinky.</p>
 
     <div class="cards" id="cards">
       <button class="card" data-i="0" aria-expanded="false" aria-controls="cardDetail">
@@ -189,6 +191,45 @@
     <div class="card-detail" id="cardDetail">
       <div class="cd-clip"><div class="cd-inner solo" id="cdInner"></div></div>
     </div>
+
+    <div class="sub-block">
+      <h2 class="h-sec wide">Proč by měli teenageři cvičit jógu?</h2>
+      <p class="lead">Dospívání je období plné změn, fyzických, emočních i mentálních, proto může být jóga skvělým nástrojem, jak zvládat stres, budovat zdravé návyky a podpořit celkovou pohodu.</p>
+    </div>
+
+    <div class="sub-block">
+      <h2 class="h-sec wide">Benefity jógy pro teenagery</h2>
+      <div class="benefits">
+      <div class="benefit">
+        <h3>Snížení stresu a úzkosti</h3>
+        <p>Školní povinnosti, sociální tlaky a rychlé životní tempo mohou u teenagerů způsobovat stres. Pravidelné cvičení jógy pomáhá snižovat hladinu kortizolu (stresového hormonu) a podporuje vnitřní klid. Relaxační techniky, jako je vědomé dýchání a meditace, učí teenagery, jak zvládat emoce a stresové situace.</p>
+      </div>
+      <div class="benefit">
+        <h3>Zlepšení soustředění a výkonu ve škole</h3>
+        <p>Jóga podporuje schopnost koncentrace a zlepšuje paměť. Díky dechovým technikám a mindfulness cvičením se teenageři učí lépe se soustředit, což jim pomáhá nejen ve škole, ale i v běžném životě.</p>
+      </div>
+      <div class="benefit">
+        <h3>Podpora správného držení těla</h3>
+        <p>Dospívající často tráví hodiny u počítače nebo mobilu, což vede k nesprávnému držení těla a bolestem zad. Jóga posiluje svaly středu těla, protahuje páteř a učí správnému postavení těla, což pomáhá předcházet bolestem a budovat zdravé pohybové návyky.</p>
+      </div>
+      <div class="benefit">
+        <h3>Zlepšení fyzické kondice</h3>
+        <p>Jóga kombinuje sílu, flexibilitu a rovnováhu. Pomáhá zpevnit tělo, zlepšit pružnost a koordinaci. Navíc se jedná o nenáročný pohyb, který je vhodný i pro ty, kteří nemají zkušenosti se sportem.</p>
+      </div>
+      <div class="benefit">
+        <h3>Podpora sebedůvěry a vnímání vlastního těla</h3>
+        <p>Dospívání je často spojeno s pochybnostmi o vlastním těle a nízkým sebevědomím. Jóga učí teenagery respektovat své tělo, vnímat jeho sílu a krásu bez tlaku na výkon či vzhled. Pomáhá jim cítit se dobře sami se sebou.</p>
+      </div>
+      <div class="benefit">
+        <h3>Lepší spánek</h3>
+        <p>Mnoho teenagerů trpí nekvalitním spánkem kvůli stresu a narušenému biorytmu. Jóga a dechová cvičení pomáhají zklidnit mysl, uvolnit napětí v těle a navodit hlubší a kvalitnější spánek.</p>
+      </div>
+      <div class="benefit">
+        <h3>Podpora emoční stability a pozitivního myšlení</h3>
+        <p>Dospívání je emočně náročné období. Jóga pomáhá harmonizovat mysl, snižuje výkyvy nálad a podporuje pozitivní myšlení. Díky meditaci a dechovým technikám se teenageři učí pracovat se svými emocemi a lépe zvládat stresové situace.</p>
+      </div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -197,11 +238,30 @@
   <div class="wrap reveal mid">
     <span class="eyebrow">Pro školy</span>
     <h2 class="h-sec wide">Jóga jako součást školního dne</h2>
-    <p class="lead">TEENJÓGA přináší výhody jógových praktik do vzdělávání. Pomáháme školám integrovat jógové praktiky do školních aktivit.</p>
+    <p class="lead"><strong>Jóga jako zdravý životní styl pro teenagery.</strong> Pravidelné cvičení jógy pomáhá teenagerům nejen po fyzické, ale i po mentální stránce. Učí je lépe zvládat každodenní výzvy, pečovat o své tělo a mysl a podporuje zdravý životní styl.</p>
 
     <div class="prose wide">
-      <p>Lekce jógy lze snadno začlenit do školního rozvrhu. Mohou probíhat jako <strong>jednorázové workshopy</strong>, <strong>pravidelné kroužky</strong>, součást hodin <strong>tělesné výchovy</strong> nebo krátké <strong>relaxační bloky</strong> během školního dne. Délku i obsah je možné přizpůsobit potřebám školy, věku žáků i časovým možnostem jednotlivých tříd. Připravujeme řešení a postupy šité na míru vašim potřebám.</p>
+      <p>Lekce jógy lze snadno začlenit do školního rozvrhu. Mohou probíhat jako:</p>
+      <ul class="ticks">
+        <li>Projektové dny</li>
+        <li>Jednorázové workshopy</li>
+        <li>Pravidelné kroužky</li>
+        <li>Součást tělesné výchovy</li>
+        <li>Relaxační bloky během školního dne</li>
+      </ul>
+      <p>Délku i obsah je možné přizpůsobit potřebám školy, věku žáků / studentů i časovým možnostem jednotlivých tříd. Připravíme řešení a postupy šité na míru vašim potřebám.</p>
       <p>Program je vhodný především pro žáky 2. stupně základních škol a studenty středních škol. Obsah lekcí respektuje věkové zvláštnosti dospívajících a zaměřuje se na podporu zdravého pohybu, správného držení těla, zvládání stresu, budování sebedůvěry a pozitivního vztahu k vlastnímu tělu.</p>
+    </div>
+
+    <h3 class="h-sub">Naše jóga pro teenagery je zaměřena na</h3>
+    <div class="prose wide">
+      <ul class="ticks">
+        <li><span><strong>Rozvoj správných pohybových vzorců:</strong> lekce pomáhají osvojit si zdravý postoj a přirozený pohyb, který prospívá držení těla.</span></li>
+        <li><span><strong>Hravá cvičení:</strong> zapojíme cviky proti plochonoží, balanční cviky na nestabilních plochách, prvky párové jógy a akrojógy.</span></li>
+        <li><span><strong>Podporu sebevědomí:</strong> díky relaxačním technikám a meditaci se děti naučí lépe věřit ve vlastní schopnosti.</span></li>
+        <li><span><strong>Flexibilitu a sílu:</strong> jemně posilujeme tělo a zlepšujeme ohebnost, což je klíčové pro celkové zdraví.</span></li>
+        <li><span><strong>Všímavost:</strong> učíme teenagery věnovat pozornost svému dechu, emocím a momentálnímu prožitku.</span></li>
+      </ul>
     </div>
 
     <h3 class="h-sub">Proč jóga do škol patří</h3>
@@ -221,31 +281,9 @@
   <div class="wrap reveal mid">
     <span class="eyebrow">Lekce</span>
     <h2 class="h-sec">Kde se potkáme</h2>
-    <p class="lead">Tento školní rok se můžeme potkat na dvou místech v Praze.</p>
+    {% if schedule.intro %}<p class="lead">{{ schedule.intro }}</p>{% endif %}
 
-    <div class="venues">
-      <div class="venue">
-        <div class="v-days">Pondělí &amp; čtvrtek</div>
-        <div class="v-place">Podiatrická ambulance, Praha&nbsp;–&nbsp;Petrovice</div>
-        <div class="v-addr">Ohmova 271, 109 00 Praha-Petrovice</div>
-      </div>
-      <div class="venue">
-        <div class="v-days">Středa</div>
-        <div class="v-place">DůmUm, Praha&nbsp;–&nbsp;Hostivař</div>
-        <div class="v-addr">Golfová 910/10, 102 00 Praha 15</div>
-        <div class="v-note">Na lekce v DoměUm je nutné být zapsán na celé pololetí, případně na celý školní rok.</div>
-      </div>
-    </div>
-
-    <div class="cms-slot">
-      <span class="cms-label">Připravujeme</span>
-      <p>Konkrétní termíny a časy vypsaných lekcí sem doplníme. Tato část bude spravovaná přes redakční systém, aby šla průběžně aktualizovat.</p>
-    </div>
-
-    <div class="gallery">
-      <div class="ph-img"><img src="brand-assets/pictures/image-09.jpg" alt="Cvičení na balančních pomůckách venku" loading="lazy"></div>
-      <div class="ph-img"><img src="brand-assets/pictures/image-10.jpg" alt="Dívky při jógové lekci" loading="lazy"></div>
-    </div>
+    {% include "_lekce.html" %}
   </div>
 </section>
 
@@ -269,8 +307,8 @@
       </div>
       <div>
         <h2 class="h-sec" style="margin-top:0;">Petra Petrů</h2>
-        <div class="prose">
-          <p>Jmenuji se Petra Petrů a jsem maminka dvou báječných kluků, dnes už vysokoškoláků.</p>
+        <div class="prose about-intro">
+          <p class="about-lead">Jsem maminka dvou báječných kluků, dnes už vysokoškoláků.</p>
           <p>Sama jsem vystudovala ekonomický obor na VŠE. Nicméně protože se můj mladší syn narodil s pohybovým handicapem a od narození jsem s ním rehabilitovala, společně jsme objevili kouzlo dětské jógy pod vedením Hanky Luhanové. A já jsem postupně pod hlavičkou ČADJ absolvovala první semináře.</p>
         </div>
       </div>
@@ -283,15 +321,8 @@
       <p>Po narození dětí jsem se potkala s Olinou Tajovskou a dlouhá léta jsem chodila na její lekce. Velmi se mi líbí její přístup. Další velikou inspirací je pro mě Lucka Königová. Několik letních týdnů jsem strávila v Hlavici, kde jsem poznala další podoby jógy, vedle jiných semináře Jóga v rehabilitaci Martiny Ježkové.</p>
     </div>
 
-    <h3 class="h-sub">Jak vypadají naše lekce jógy pro teens?</h3>
+    <h3 class="h-sub">Co se teenky na lekcích naučí a v čem se zdokonalí?</h3>
     <div class="prose wide">
-      <p>Zaměřujeme se na vnímání těla a jeho správné držení, na rovnováhu, která teenkám dodá přirozené sebevědomí a pomůže jim respektovat sebe i své okolí. Učíme se také odpočívat.</p>
-      <p>Hodiny jsou hravé, doplněné o balanční cvičení na nestabilních plochách a jsou vždy přizpůsobeny momentální náladě, potřebám a rozpoložení skupinky.</p>
-    </div>
-
-    <h3 class="h-sub">Mojí specializací jsou teenky</h3>
-    <div class="prose wide">
-      <p>Některé děti ze skupinek tříleťáků jsem postupně dovedla až do puberty. A tu jsem zjistila, že mě tato věková kategorie v posledních letech baví nejvíc. V současné době tedy vedu lekce teenjógy, a to <strong>pouze pro dívky</strong>.</p>
       <p>Mladé slečny se naučí lépe vnímat své tělo, stanovovat si hranice, učíme se cviky na protažení zkrácených partií, uvolnění napětí a cviky na posílení oslabených částí těla. Provádím slečny meditací i relaxací, stanovujeme si záměr, zkoušíme sílu muder a manter.</p>
       <p>Nabízím slečnám cviky proti plochonoží, cviky na nestabilních plochách a prvky, které můžou zařadit do běžného dne, třeba při čekání na autobus nebo ve frontě na oběd. Věřím, že to mladé slečny baví a naše společná setkání jsou jim zároveň k užitku.</p>
     </div>
@@ -355,6 +386,7 @@
         <div class="acc-body">
           <p style="color:var(--ink-soft);margin-bottom:1.2rem;">Vypisuji ty pro mě nejdůležitější.</p>
           <ul class="cv">
+            <li><span class="yr">2026</span><span>Školení Trenéři ve škole</span></li>
             <li><span class="yr">2025</span><span>Jóga v rehabilitaci, pokročilí, Martina Ježková, přímá spolupracovnice MUDr. Koláře</span></li>
             <li><span class="yr">2024–2025</span><span>Instruktor Zdravotní tělesné výchovy (150 hodin)</span></li>
             <li><span class="yr">2020</span><span>Funkční trénink dětí a dospívajících, CKP Dobřichovice (Hybš a Šádek)</span></li>
@@ -374,9 +406,13 @@
         <div class="acc-body">
           <div class="prose wide" style="margin-top:0;">
             <p>Samostatně vedu kurzy dětské jógy a cvičení na balančních pomůckách <strong>od roku 2013</strong>.</p>
-            <p>Předtím jsem vedla odpolední kroužky v družině na ZŠ Křimická, Praha 15, pod patronací podiatrické ambulance v Praze 15.</p>
-            <p>S podiatrickou ambulancí spolupracuji dodnes. Pondělní a čtvrteční kurzy vedu na poliklinice Petrovice, ve středu mám lekci v DoměUm Praha 15.</p>
           </div>
+          <ul class="ticks practice">
+            <li><span><strong>DůmUm Praha 15:</strong> každou středu vedu kroužek Jóga pro teens.</span></li>
+            <li><span><strong>Podiatrická ambulance MUDr. Švejdové:</strong> každé pondělí a čtvrtek vedu v ambulanci lekce pro teenky.</span></li>
+            <li><span><strong>Klid do lavic:</strong> preventivní program pro základní školy, který přináší mindfulness, jógu, arteterapii a odbornou podporu pro děti, učitele i rodiče.</span></li>
+            <li><span><strong>Praha 10:</strong> jóga zdarma pro občany Prahy 10.</span></li>
+          </ul>
         </div>
       </details>
     </div>
@@ -497,9 +533,14 @@
   })();
 
   // ---- Teenjóga expanding cards ----
+  // A card can have a picture beside its text: img: {file, alt, w, h, left}
+  // (left: true puts the picture on the left). A tap on it opens it full size.
+
   const cardContent = [
     {
       h: "Moje tělo a mysl",
+      img: {file: 'zada-a-mobil-reset.webp', w: 1000, h: 1400, left: true,
+            alt: 'Záda a mobil reset: rychlá pauza pro tělo v pěti krocích, od otevření hrudníku po pomalý dech'},
       body:
         '<ul class="ticks">' +
         '<li>Podporujeme správné držení těla</li>' +
@@ -511,8 +552,10 @@
     },
     {
       h: "Dech a klid",
+      img: {file: 'dechove-cviceni.webp', w: 1000, h: 1400,
+            alt: 'Dechové cvičení na 1 až 2 minuty: dlouhý dech 4 a 6 sekund, boxové dýchání a dech před testem'},
       body:
-        '<p class="pull">„Stres není nepřítel. Je to jen signál, že ti na výsledku záleží. Když zklidníš dech, zklidníš i hlavu."</p>' +
+        '<p class="pull">„Stres není nepřítel. Je to jen signál, že ti na výsledku záleží. Když zklidníš dech, zklidníš i hlavu.“</p>' +
         '<p>Dechové techniky, které jsou jednoduché, rychlé a dají se použít přímo před testem nebo během stresu. ' +
         'Kontrolované pomalé dýchání pomáhá aktivovat uklidňující část nervového systému a zlepšuje soustředění.</p>'
     },
@@ -552,7 +595,16 @@
 
   function render(i){
     const c = cardContent[i];
-    inner.innerHTML = '<div><h3>' + c.h + '</h3>' + c.body + '</div>';
+    let html = '<div class="cd-text"><h3>' + c.h + '</h3>' + c.body + '</div>';
+    inner.className = 'cd-inner solo';
+    if (c.img){
+      const src = '/brand-assets/pictures/' + c.img.file;
+      html += '<a class="cd-photo" href="' + src + '" target="_blank" rel="noopener">' +
+              '<img src="' + src + '" alt="' + c.img.alt + '" width="' + c.img.w + '" height="' + c.img.h + '"></a>';
+      inner.classList.add('has-img');
+      if (c.img.left) inner.classList.add('img-left');
+    }
+    inner.innerHTML = html;
   }
 
   function close(){
@@ -566,10 +618,39 @@
     else if (detail.previousElementSibling !== cardsWrap) cardsWrap.after(detail);
   }, {passive:true});
 
+  const clip = detail.querySelector('.cd-clip');
+  const calm = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  // Switching from one open tile to another: slide the old content out,
+  // swap it, glide the panel to its new height and slide the new content in
+  // from the side of the clicked tile.
+  function swap(i, dir){
+    const from = clip.offsetHeight;
+    inner.classList.add(dir > 0 ? 'leaving-next' : 'leaving-prev');
+    setTimeout(() => {
+      render(i);
+      inner.classList.add(dir > 0 ? 'enter-next' : 'enter-prev');
+      const to = inner.offsetHeight;
+      clip.style.height = from + 'px';
+      void clip.offsetHeight;
+      clip.style.transition = 'height .5s cubic-bezier(.16,1,.3,1)';
+      clip.style.height = to + 'px';
+      setTimeout(() => { clip.style.height = ''; clip.style.transition = ''; }, 520);
+    }, calm() ? 0 : 200);
+  }
+
   cards.forEach(card => {
     card.addEventListener('click', () => {
       const i = +card.dataset.i;
       if (i === current){ close(); return; }
+      if (current > -1 && !isPhone()){
+        cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
+        card.classList.add('active'); card.setAttribute('aria-expanded','true');
+        const dir = i > current ? 1 : -1;
+        current = i;
+        swap(i, dir);
+        return;
+      }
       render(i);
       cards.forEach(c => { c.classList.remove('active'); c.setAttribute('aria-expanded','false'); });
       card.classList.add('active'); card.setAttribute('aria-expanded','true');

@@ -1,0 +1,31 @@
+{# Lekce on the homepage: the lesson cards and the photo gallery.
+   Both come from content/lekce/lekce.yaml, which Petra edits in the editor. #}
+{% if schedule.lessons %}
+    <div class="venues">
+      {% for lesson in schedule.lessons %}
+      <div class="venue">
+        <div class="v-days">{{ lesson.day }}</div>
+        <div class="v-time">{{ lesson.time }}</div>
+        <div class="v-place">{{ lesson.place }}</div>
+        <div class="v-addr">{{ lesson.address }}</div>
+        {% if lesson.note_html %}<div class="v-note">{{ lesson.note_html | safe }}</div>{% endif %}
+      </div>
+      {% endfor %}
+    </div>
+{% endif %}
+{% if schedule.gallery %}
+    <div class="carousel gallery-carousel" data-carousel>
+      <div class="carousel-track" tabindex="0" role="region" aria-label="Fotky z lekcí, posouvejte do stran">
+        {% for photo in schedule.gallery %}
+        <figure class="post-card post-card--{{ photo.orientation }}">
+          <img class="post-card-img" src="/lekce/{{ photo.file }}" alt="{{ photo.alt }}" loading="lazy">
+        </figure>
+        {% endfor %}
+      </div>
+      <div class="carousel-nav">
+        <button class="carousel-btn" type="button" data-dir="-1" aria-label="Předchozí fotky">←</button>
+        <button class="carousel-btn" type="button" data-dir="1" aria-label="Další fotky">→</button>
+      </div>
+    </div>
+    <script src="/js/carousel.js" defer></script>
+{% endif %}

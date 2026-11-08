@@ -192,6 +192,7 @@
   .cd-inner h3{font-family:var(--display);color:var(--on-dark);font-size:clamp(1.6rem,3vw,2.2rem);margin-bottom:.8rem;}
   .cd-inner p{color:var(--on-dark-soft);margin-bottom:.8rem;}
   .cd-inner .ph-img{aspect-ratio:4/3;}
+  .cd-figure img{display:block;width:100%;height:auto;}
 
   /* ---------- Pro školy (dark) ---------- */
   .dark{background:var(--accent);color:var(--on-dark);}
@@ -305,6 +306,12 @@
   .ticks li::before{content:"";flex:none;width:8px;height:8px;margin-top:.62rem;border-radius:50%;background:#e0a98f;}
   .cd-inner .ticks li{color:var(--on-dark-soft);}
   .cd-inner .ticks li::before{background:var(--primary);}
+  .dark .ticks li{color:var(--on-dark-soft);}
+  .dark .ticks li::before{background:var(--primary);}
+  .dark .ticks strong,.dark p.lead strong{color:var(--on-dark);font-weight:600;}
+  .prose .ticks{margin:.2rem 0 1.1rem;}
+  .ticks.practice{margin-top:1.1rem;}
+  .ticks strong{color:var(--ink);font-weight:600;}
 
   /* ---------- topic tags (card 03) ---------- */
   .topics{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:1.2rem;}
@@ -312,28 +319,67 @@
     background:rgba(201,217,232,.16);border:1px solid rgba(201,217,232,.32);color:var(--on-dark);}
 
   /* ---------- pull quote ---------- */
+  /* O mně: orange line beside the intro, first sentence as a quiet quote */
+  .about-intro{border-left:3px solid #e0957a;padding-left:clamp(1.1rem,2vw,1.6rem);}
+  .about-intro .about-lead{font-family:var(--serif);font-style:italic;font-size:clamp(1.2rem,2vw,1.45rem);
+    line-height:1.4;color:var(--ink);}
   .pull{font-family:var(--serif);font-style:italic;font-size:clamp(1.15rem,2.2vw,1.5rem);
     line-height:1.4;color:var(--on-dark);border-left:3px solid var(--primary);
     padding-left:1.2rem;margin-bottom:1.4rem;}
 
   /* ---------- detail panel: single column when no image ---------- */
   .cd-inner.solo{grid-template-columns:1fr;}
+  /* Panel with a picture: text beside it, picture flush with the panel's edge.
+     The panel's rounded corners clip the picture's outer corners. */
+  .cd-inner.solo.has-img{grid-template-columns:minmax(0,1fr) auto;padding:0;gap:0;align-items:stretch;background:transparent;}
+  .cd-inner.has-img .cd-text{padding:clamp(1.6rem,3vw,2.6rem);background:var(--accent);
+    border-radius:var(--radius) 0 0 var(--radius);display:flex;flex-direction:column;justify-content:center;}
+  .cd-inner.img-left .cd-text{border-radius:0 var(--radius) var(--radius) 0;}
+  .cd-inner.has-img .ticks{margin-top:0;}
+  .cd-inner.has-img h3{font-size:clamp(2.1rem,4.2vw,3rem);line-height:1.05;margin-bottom:1.1rem;}
+  .cd-inner.has-img .cd-text > :last-child{margin-bottom:0;}
+  .cd-photo{display:block;width:clamp(260px,30vw,400px);}
+  .cd-photo img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0 var(--radius) var(--radius) 0;}
+  .cd-inner.img-left .cd-photo img{border-radius:var(--radius) 0 0 var(--radius);}
+  /* Switching tiles: the content slides out and the new content slides in
+     from the side of the clicked tile, like turning a page. */
+  .cd-inner.leaving-next > *{opacity:0;transform:translateX(-56px);transition:opacity .2s ease, transform .2s ease;}
+  .cd-inner.leaving-prev > *{opacity:0;transform:translateX(56px);transition:opacity .2s ease, transform .2s ease;}
+  .cd-inner.enter-next > *{animation:cdFromRight .55s var(--ease) both;}
+  .cd-inner.enter-prev > *{animation:cdFromLeft .55s var(--ease) both;}
+  .cd-inner.enter-next > :nth-child(2),.cd-inner.enter-prev > :nth-child(2){animation-delay:.06s;}
+  @keyframes cdFromRight{from{opacity:0;transform:translateX(56px);}to{opacity:1;transform:none;}}
+  @keyframes cdFromLeft{from{opacity:0;transform:translateX(-56px);}to{opacity:1;transform:none;}}
+  @media(prefers-reduced-motion:reduce){
+    .cd-inner.enter-next > *,.cd-inner.enter-prev > *{animation:none;}
+    .cd-inner.leaving-next > *,.cd-inner.leaving-prev > *{transition:none;}
+  }
+  .cd-inner.solo.has-img.img-left{grid-template-columns:auto minmax(0,1fr);}
+  .cd-inner.img-left .cd-photo{order:-1;}
+  @media(max-width:860px){
+    .cd-inner.solo.has-img,.cd-inner.solo.has-img.img-left{grid-template-columns:1fr;}
+    .cd-inner.img-left .cd-photo{order:0;}          /* phones: text first, picture below */
+    .cd-photo img,.cd-inner.img-left .cd-photo img{border-radius:0 0 var(--radius) var(--radius);}
+    .cd-inner.has-img .cd-text,.cd-inner.img-left .cd-text{border-radius:var(--radius) var(--radius) 0 0;}
+    .cd-photo{width:100%;}
+  }
 
   /* ---------- Lekce: venues ---------- */
-  .venues{display:grid;grid-template-columns:repeat(2,1fr);gap:1.4rem;margin-top:2.6rem;}
+  .venues{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:1.4rem;margin-top:2.6rem;}
   .venue{background:var(--primary-tint);border-radius:var(--radius);padding:2rem 1.8rem;
     display:flex;flex-direction:column;gap:.55rem;border:1px solid rgba(46,74,102,.06);}
   .venue .v-days{font-family:var(--display);font-size:1.6rem;line-height:1.1;}
+  .venue .v-time{font-weight:600;color:#b8734f;margin-top:-.2rem;}
   .venue .v-place{font-weight:600;}
   .venue .v-note{font-size:.94rem;color:var(--ink-soft);}
+  .venue .v-note p{margin:0;}
+  .venue .v-note p + p{margin-top:.4rem;}
+  .venue .v-note a{color:var(--ink);text-decoration:underline;text-decoration-thickness:2px;text-decoration-color:var(--primary);text-underline-offset:3px;}
   .venue .tag{margin-top:.3rem;}
   @media(max-width:860px){.venues{grid-template-columns:1fr;}}
 
-  /* ---------- gallery ---------- */
-  .gallery{display:grid;grid-template-columns:1fr 1fr;gap:1.4rem;margin-top:2.6rem;}
-  .gallery .ph-img{aspect-ratio:16/9;}
-  .gallery .ph-img img{object-fit:cover;}
-  @media(max-width:860px){.gallery{grid-template-columns:1fr;}}
+  /* ---------- Lekce gallery (a carousel, styled in blog.css) ---------- */
+  .gallery-carousel figure{margin:0;}
 
   /* ---------- CMS-ready block ---------- */
   .cms-slot{margin-top:2.4rem;border:1.5px dashed rgba(46,74,102,.28);border-radius:var(--radius);
@@ -376,6 +422,13 @@
   .mid .h-sec{max-width:none;}
   .mid p.lead{max-width:62ch;}
   .h-sec.wide{max-width:none;}
+  /* Teenjóga: extra blocks under the cards */
+  .sub-block{margin-top:clamp(4rem,9vw,6.5rem);}
+  .benefits{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2rem 3rem;margin-top:2.4rem;}
+  .benefit{padding-left:1.2rem;border-left:2px solid var(--primary);}
+  .benefit h3{font-family:var(--display);font-weight:400;font-size:clamp(1.25rem,2.2vw,1.5rem);line-height:1.2;color:var(--ink);}
+  .benefit p{margin-top:.55rem;color:var(--ink-soft);}
+  @media(max-width:700px){.benefits{grid-template-columns:1fr;gap:1.6rem;}}
 
   /* wide single-column prose */
   .prose.wide{max-width:none;}
@@ -384,6 +437,7 @@
   /* wider hero */
   .hero-lower{margin-top:1.8rem;max-width:62ch;}
   .hero-copy .lead{margin-top:0;}
+  .hero-copy .lead + .lead{margin-top:.9rem;}
   .hero-meta{margin-top:3rem;display:grid;grid-template-columns:repeat(3,1fr);
     gap:clamp(1.5rem,4vw,3rem);}
   .hm-item{display:grid;gap:.1rem;padding-left:1.1rem;border-left:2px solid var(--primary);}
